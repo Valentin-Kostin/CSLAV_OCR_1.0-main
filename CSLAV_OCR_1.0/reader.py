@@ -3,7 +3,9 @@ import collections
 import numpy
 import cv2
 import fitz
-from tensorflow import keras
+import keras
+from tkinter import *
+from tkinter import filedialog
 
 
 class Symbol:
@@ -24,13 +26,30 @@ class Symbol:
         self.coordinates = rectangle[0], rectangle[1], rectangle[0] + rectangle[2], rectangle[1] + rectangle[3]
 
 
+def clicked():    
+    trek = filedialog.askopenfilename(filetypes=(
+        ("PDF files", "*.pdf"), ("all files", "*.*")))
+    #file = fitz.open(trek, 'r', encoding='utf-16')
+    #trek = trek[0:-4]
+    print(trek)
+    return trek
+
+
 def load_page_from_pdf(pdffile, page_number, zoom=4.166):
+    print('10')
     doc = fitz.open(pdffile)
+    print(doc)
     page = doc.load_page(page_number - 1)
+    print('12')
     mat = fitz.Matrix(zoom, zoom)
-    pix = page.getPixmap(matrix=mat)
-    output_fname = 'results\\'+pdffile+'\\page'+str(page_number)+'\\'+'page.png'
-    pix.writeImage(output_fname)
+    print('13')
+    pix = page.get_pixmap(matrix=mat)
+    print('14', pix)
+    output_fname = pdffile[0:-4]+'\\page'+str(page_number)+'\\'+'page.png'
+    print('15')
+    """cv2.imwrite(output_fname, pix)
+    print('16')"""
+    pix.save(output_fname)
     print('Страница сохранена в файл page.png')
     return 'page.png'
 
@@ -221,13 +240,16 @@ def get_text(filename, model, predictions_list, save_interim_results=False):
 
 
 def main(model_name, predictions_file):
-    pdffile = input('Введите имя пдф-файла: ')
+    pdffile = clicked() #input('Введите имя пдф-файла: ')
     page_number = int(input('Введите номер страницы: '))
-    result_dir = 'results\\'+pdffile+'\\page'+str(page_number)
+    result_dir = pdffile[0:-4]+'/page'+str(page_number)
     os.makedirs(result_dir, exist_ok=True)
     print('Результаты будут сохранены в папке '+result_dir)
+    print('0')
     fname = load_page_from_pdf(pdffile, page_number)
+    print('1')
     model = keras.models.load_model(model_name)
+    print('2', model)
     predictions_list = decode_predictions(predictions_file)
     os.chdir(result_dir)
     save_interim_results = int(input('Сохранить промежуточные результаты? 1 - да, 0 - нет  '))
@@ -235,5 +257,13 @@ def main(model_name, predictions_file):
         f.write(get_text(fname, model, predictions_list, save_interim_results=save_interim_results))
     print('Распознанный текст в файле text.txt')
 
-    
-main('machine.h5', 'predictions.txt')
+"""window = Tk()
+window.title("Распознование текста")
+window.geometry('700x400')
+lbl = Label(window, text="Привет!")
+lbl.grid(column=2, row=0)
+btn = Button(window, text="загрузить файл", command=main('machine.h5', 'predictions.txt'))
+btn.grid(column=2, row=1)
+
+window.mainloop()"""
+main('c:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR_1.0/machine.h5', 'c:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR_1.0/predictions.txt')

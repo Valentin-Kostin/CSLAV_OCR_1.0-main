@@ -1,8 +1,8 @@
 #крч есть +- документация, вот
 #всякие импорты
-import os, collections, numpy, cv2, fitz
-from tensorflow import keras
 
+import os, collections, numpy, cv2, fitz, keras
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 class Symbol:
     #мне кажется так все таки довольно удобно
     #есть свойства
@@ -36,7 +36,7 @@ def load_page_from_pdf(pdffile, page_number, zoom=4.166): #загрузка ст
     page = doc.load_page(page_number)
     mat = fitz.Matrix(zoom, zoom)
     pix = page.getPixmap(matrix=mat)
-    output_fname = 'results\\'+pdffile+'\\page'+str(page_number)+'\\'+'page.png'
+    output_fname = pdffile+'\\page'+str(page_number)+'\\'+'page.png'
     pix.writeImage(output_fname)
     print('Страница сохранена в файл page.png')
     return 'page.png'
@@ -242,7 +242,7 @@ def get_text(filename, model, predictions_list, save_interim_results=False): #п
 def main(model_name, predictions_file): #нужны файл с обученной моделью и файл с соответствиями предсказаний и символов
     pdffile = input('Введите имя пдф-файла: ')
     page_number = int(input('Введите номер страницы: '))
-    result_dir = 'results\\'+pdffile+'\\page'+str(page_number)
+    result_dir = pdffile+'\\page'+str(page_number)
     os.makedirs(result_dir, exist_ok=True)
     print('Результаты будут сохранены в папке '+result_dir)
     fname = load_page_from_pdf(pdffile, page_number)
@@ -255,4 +255,4 @@ def main(model_name, predictions_file): #нужны файл с обученно
         f.write(get_text(fname, model, predictions_list, save_interim_results=save_interim_results))
     print('Распознанный текст в файле '+result_file)
 
-main('machine.h5', 'predictions.txt')
+main('c:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR-main/machine.h5', 'c:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR-main/predictions.txt')
