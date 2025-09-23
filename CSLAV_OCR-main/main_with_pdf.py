@@ -1,8 +1,15 @@
 #крч есть +- документация, вот
 #всякие импорты
 
-import os, collections, numpy, cv2, fitz, keras
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import os ; os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import collections
+import numpy
+import cv2
+import fitz
+import keras
+from tkinter import *
+from tkinter import filedialog
+
 class Symbol:
     #мне кажется так все таки довольно удобно
     #есть свойства
@@ -30,14 +37,24 @@ class Symbol:
         self.coordinates = rectangle[0], rectangle[1], rectangle[0] + rectangle[2], rectangle[1] + rectangle[3]
 
 
+def clicked():
+    # функция выбора пути к файлу
+    trek = filedialog.askopenfilename(filetypes=(
+        ("PDF files", "*.pdf"), ("all files", "*.*")))
+    #file = fitz.open(trek, 'r', encoding='utf-16')
+    #trek = trek[0:-4]
+    print(trek)
+    return trek
+
+
 def load_page_from_pdf(pdffile, page_number, zoom=4.166): #загрузка страницы из пдф в файл пнг
     #pdffile - имя файла, page_number - номер страницы по файлу в читалке - 1
     doc = fitz.open(pdffile)
-    page = doc.load_page(page_number)
+    page = doc.load_page(page_number) #-1
     mat = fitz.Matrix(zoom, zoom)
-    pix = page.getPixmap(matrix=mat)
-    output_fname = pdffile+'\\page'+str(page_number)+'\\'+'page.png'
-    pix.writeImage(output_fname)
+    pix = page.get_pixmap(matrix=mat)
+    output_fname = pdffile[0:-4]+'\\page'+str(page_number)+'\\'+'page.png'
+    pix.save(output_fname)
     print('Страница сохранена в файл page.png')
     return 'page.png'
 
@@ -49,6 +66,7 @@ def decode_predictions(prediction_file): #из файла получает пр�
     for i in range(len(predictions_list)):
         predictions_list[i] = predictions_list[i].split('\t')
     return predictions_list
+
 
 def get_text(filename, model, predictions_list, save_interim_results=False): #пока сборная функция для получения текста
     #filename - имя картинки, predictions_list - соответствия предсказаний и символов, model - модель
@@ -173,9 +191,9 @@ def get_text(filename, model, predictions_list, save_interim_results=False): #п
         i = 0
         for symbol in symbols_list:
             if i < len(edges) - 1:
-               if symbol.coordinates[1] > edges[-i - 2]:
-                   rows[i].append(symbol)
-               else:
+                if symbol.coordinates[1] > edges[-i - 2]:
+                    rows[i].append(symbol)
+                else:
                     i += 1
             else:
                 rows[i].append(symbol)
@@ -240,19 +258,31 @@ def get_text(filename, model, predictions_list, save_interim_results=False): #п
 
 
 def main(model_name, predictions_file): #нужны файл с обученной моделью и файл с соответствиями предсказаний и символов
-    pdffile = input('Введите имя пдф-файла: ')
+    pdffile = clicked() #input('Введите имя пдф-файла: ')
     page_number = int(input('Введите номер страницы: '))
-    result_dir = pdffile+'\\page'+str(page_number)
+    result_dir = pdffile[0:-4]+'/page'+str(page_number)
     os.makedirs(result_dir, exist_ok=True)
     print('Результаты будут сохранены в папке '+result_dir)
+    print('0')
     fname = load_page_from_pdf(pdffile, page_number)
+    print('1')
     model = keras.models.load_model(model_name)
+    print('2', model)
     predictions_list = decode_predictions(predictions_file)
     os.chdir(result_dir)
     save_interim_results = int(input('Сохранить промежуточные результаты? 1 - да, 0 - нет  '))
-    result_file = 'text.txt'
-    with open(result_file, 'w', encoding='utf-8') as f:
+    with open('text.txt', 'w', encoding='utf-8') as f:
         f.write(get_text(fname, model, predictions_list, save_interim_results=save_interim_results))
-    print('Распознанный текст в файле '+result_file)
+    print('Распознанный текст в файле text.txt')
 
-main('c:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR-main/machine.h5', 'c:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR-main/predictions.txt')
+"""window = Tk()
+window.title("Распознование текста")
+window.geometry('700x400')
+lbl = Label(window, text="Привет!")
+lbl.grid(column=2, row=0)
+btn = Button(window, text="загрузить файл", command=main('machine.h5', 'predictions.txt'))
+btn.grid(column=2, row=1)
+
+window.mainloop()"""
+
+main('C:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR-main/machine.h5', 'C:/Coding/CSLAV/CSLAV_OCR_1.0-main/CSLAV_OCR-main/predictions.txt')
