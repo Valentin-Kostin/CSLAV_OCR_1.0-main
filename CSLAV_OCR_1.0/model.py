@@ -1,3 +1,4 @@
+#импортируем всякое из tensorflow и pyplot чисто для визуаизации процесса обучения
 import matplotlib.pyplot as plt
 import os; os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from tensorflow import keras
@@ -6,6 +7,7 @@ from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
 from keras.callbacks import ReduceLROnPlateau
 from keras.src.legacy.preprocessing.image import ImageDataGenerator
 
+#создание модели
 model = Sequential()
 model.add(Conv2D(filters=32, kernel_size=(3, 3), input_shape=(56, 56, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -19,16 +21,20 @@ model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(49, activation='softmax'))
 
+#компиляция модели
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
+#создание генераторов для обучения и оценки модели и добавление снижения скорости обучения, если аккуратность перестает расти
 datagen = ImageDataGenerator(rescale=1. / 255)
 train_generator = datagen.flow_from_directory('cnn\\train', target_size=(56, 56), batch_size=20, class_mode='categorical')
 val_generator = datagen.flow_from_directory('cnn\\val', target_size=(56, 56), batch_size=20, class_mode='categorical')
 test_generator = datagen.flow_from_directory('cnn\\val', target_size=(56, 56), batch_size=20, class_mode='categorical')
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience=3, verbose=1, factor=0.5, min_lr=0.00001)
 
+#собственно обучение
 history = model.fit(train_generator, steps_per_epoch=197, epochs=30, validation_data=val_generator, validation_steps=46, callbacks=[learning_rate_reduction])
 
+#визуализация
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 loss = history.history['loss']
@@ -47,8 +53,10 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
 
+#оценка модели
 print(model.evaluate(val_generator, steps=42)[1])
 
+#ну и по желанию сохраняем модель
 neploho = int(input('Сохранить модель? 1 - да, 0 - нет  '))
 if neploho:
     model.save('machine.h5')

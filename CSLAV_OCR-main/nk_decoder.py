@@ -1,6 +1,6 @@
 def shit2utf8(text):
     decoding_map = {i:i for i in 'ЙЦУКЕНГШЩЗХЪЭЖДЛОРПАВЫФЯЧСМИТЬБЮйцукенгшщзхъэждлорпавыфячсмитьбю.!";: -/\n\t'}
-    # those are similar characters in both encodings
+    # это одинаковые символы в обеих кодировках
     decoding_map.update(
         {
             '#': '\u0486',
@@ -83,7 +83,7 @@ def shit2utf8(text):
             '|': '\u0467' + '\u0486' + '\u0300',  # lowercase small yus with apostroph
             '}': '\u0438' + '\u0483',  # the numeral eight
             '~': '\u0301',  # yet another acute accent
-            ### SECOND HALF IS THE CYRILLIC BLOCK
+            ### ВТОРАЯ ПОЛОВИНА - ЭТО КИРИЛЛИЧЕСКИЙ БЛОК
             '.': '·',  # жирная точка по центру
             'Ђ': '\u0475' + '\u0301',  # lowercase izhitsa with acute
             'Ѓ': '\u0410' + '\u0486' + '\u0301',  # uppercase A with psili and acute
@@ -149,7 +149,7 @@ def shit2utf8(text):
             'у': '\uA64B',  # monograph Uk (why?!)
             'э': '\u0463',  # lowercase yat
             'я': '\uA657',  # iotated a
-            ### FURTHER THOSE UNIQE TO THIS PARTICULAR TEXT (the evangelion of 1606)
+            ### ДАЛЕЕ ТЕ, КТО ЗНАКОМ С ЭТИМ КОНКРЕТНЫМ ТЕКСТОМ (евангелие 1606 года)
             'ӣ': '\u2DE0' + '\u0487',  # надстр б под титлом
             'Ӣ': '\u2DF6' + '\u0487',  # надстр а
             'μ': 'у',
@@ -248,8 +248,8 @@ def setchars(text, dump_list='', punct=True, superscripts=True, exceptions='', l
         to_dump += '꙳!";:-/.,\u00BB\u201A\u201E·\u2018\u2019\u201C\u201D\u2013\u2014\u0482\u00AB\u00AC'
     if not superscripts:
         to_dump += '\u0486\u0301‶\u2DE8\u2DF2\uFE2F\uFE2E\u2DF3\u2DF4\u2DE7\u2DF7\u2DEE\u2DE6\u2DF0' \
-                      '\u2DF6\u2DE0\u0308\uA67E\u0486\u0300\u0301\u0483\u2DE1\u0487\u0311\u033E\u2DEF\u2DE9' \
-                      '\u2DEC\u2DF1\u2DED\u0486\u2DE3\u2DEA\u2DE2\u2DE5\u2DE4̓҅ⸯ꙯҄̒'
+                        '\u2DF6\u2DE0\u0308\uA67E\u0486\u0300\u0301\u0483\u2DE1\u0487\u0311\u033E\u2DEF\u2DE9' \
+                        '\u2DEC\u2DF1\u2DED\u0486\u2DE3\u2DEA\u2DE2\u2DE5\u2DE4̓҅ⸯ꙯҄̒'
 
     for i in exceptions:  # реалзует исключения из пунктуации и надстрочников
         to_dump = to_dump.replace(i, '')
