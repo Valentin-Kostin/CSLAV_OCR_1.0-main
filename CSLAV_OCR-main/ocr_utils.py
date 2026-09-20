@@ -96,6 +96,7 @@ def kinovar2black(img):
 def prepare_img(filename, save_interim_results=False):
     """
     Предобработка изображения: удаление киновари, бинаризация, эрозия.
+    Исправлена проблема с кириллическими путями в Windows.
     
     Args:
         filename: путь к изображению
@@ -104,7 +105,14 @@ def prepare_img(filename, save_interim_results=False):
     Returns:
         img_erode: подготовленное бинарное изображение
     """
-    img = cv2.imread(filename)
+    # Исправление для путей с кириллицей в OpenCV на Windows
+    # Читаем файл как байты и декодируем вручную
+    img_array = numpy.fromfile(filename, dtype=numpy.uint8)
+    img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+    
+    if img is None:
+        raise ValueError(f"Не удалось прочитать изображение. Проверьте целостность файла: {filename}")
+    
     se = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     img_ex = cv2.morphologyEx(img, cv2.MORPH_DILATE, se)
     img_no_kinovar = kinovar2black(img_ex)
@@ -193,7 +201,14 @@ def get_symbols_from_file(filename, prediction_file, model_name, min_h, max_h=70
     """
     model = models.load_model(model_name)
     predictions_list = decode_predictions(prediction_file)
-    img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+    
+    # Исправление для путей с кириллицей в OpenCV на Windows
+    img_array = numpy.fromfile(filename, dtype=numpy.uint8)
+    img = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
+    
+    if img is None:
+        raise ValueError(f"Не удалось прочитать изображение: {filename}")
+    
     boxes = get_boxes_from_image(filename, min_h, max_h, max_w)
     
     symbols = []
