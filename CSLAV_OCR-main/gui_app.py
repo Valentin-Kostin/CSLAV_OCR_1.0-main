@@ -46,6 +46,7 @@ class CSLAVOCRApp:
         self.rotated_temp_dir = None  # Временная папка для повёрнутых изображений
         self.rotation_angle = tk.DoubleVar(value=0.0)  # Угол поворота в градусах
         self.original_file_path = None  # Путь к оригинальному файлу для сброса поворота
+        self.image_scale = tk.DoubleVar(value=1.0)  # Масштаб изображения
         
         # Пути по умолчанию
         self.default_model_path = os.path.join(os.path.dirname(__file__), 'machine.h5')
@@ -156,7 +157,7 @@ class CSLAVOCRApp:
         bottom_row = ttk.Frame(top_frame)
         bottom_row.pack(side=tk.TOP, fill=tk.X, pady=(5, 0))
         
-        # Панель поворота изображения
+        # Панель поворота изображения (перемещена вниз)
         rotate_frame = ttk.LabelFrame(bottom_row, text="Поворот изображения", padding="5")
         rotate_frame.pack(side=tk.LEFT, fill=tk.X, padx=5)
         
@@ -167,6 +168,17 @@ class CSLAVOCRApp:
         ttk.Button(rotate_frame, text="⟲ 90°", command=lambda: self._rotate_by_90(90)).pack(side=tk.LEFT, padx=2)
         ttk.Button(rotate_frame, text="⟳ -90°", command=lambda: self._rotate_by_90(-90)).pack(side=tk.LEFT, padx=2)
         ttk.Button(rotate_frame, text="✕ Сброс", command=self._reset_rotation).pack(side=tk.LEFT, padx=2)
+        
+        # Панель масштабирования (добавлена рядом с поворотом)
+        scale_frame = ttk.LabelFrame(bottom_row, text="Масштабирование", padding="5")
+        scale_frame.pack(side=tk.LEFT, fill=tk.X, padx=5)
+        
+        ttk.Label(scale_frame, text="Масштаб:").pack(side=tk.LEFT, padx=2)
+        ttk.Spinbox(scale_frame, from_=0.1, to=5.0, increment=0.1, textvariable=self.image_scale, width=5).pack(side=tk.LEFT, padx=2)
+        
+        ttk.Button(scale_frame, text="+", command=self._increase_scale, width=3).pack(side=tk.LEFT, padx=2)
+        ttk.Button(scale_frame, text="-", command=self._decrease_scale, width=3).pack(side=tk.LEFT, padx=2)
+        ttk.Button(scale_frame, text="1:1", command=self._reset_scale, width=3).pack(side=tk.LEFT, padx=2)
         
         # Правая часть - кнопки управления
         control_frame = ttk.LabelFrame(bottom_row, text="Управление", padding="5")
@@ -307,6 +319,7 @@ class CSLAVOCRApp:
             self.selected_file = filename
             self.file_type = 'image'
             self.rotation_angle.set(0.0)  # Сброс угла поворота
+            self.image_scale.set(1.0)  # Сброс масштаба
             self.file_label.config(text=os.path.basename(filename), foreground="black")
             self.status_var.set(f"Выбран файл: {os.path.basename(filename)}")
             # Обновляем отображение после завершения основного цикла событий
@@ -587,6 +600,7 @@ class CSLAVOCRApp:
         self.file_type = None
         self.file_label.config(text="Не выбран", foreground="gray")
         self.rotation_angle.set(0.0)
+        self.image_scale.set(1.0)
         # Очистка временной папки
         self._cleanup_temp_dir()
         self.status_var.set("Все очищено")
@@ -614,57 +628,92 @@ class CSLAVOCRApp:
         self._apply_rotation()
     
     def _reset_rotation(self):
-        """Сброс поворота к исходному изображению."""
+        """Сброс поворота и масштаба к исходному изображению."""
         self.rotation_angle.set(0.0)
+        self.image_scale.set(1.0)
         if self.rotated_temp_dir:
             self._cleanup_temp_dir()
         # Восстановление оригинального файла если он был
         if self.original_file_path:
             self.selected_file = self.original_file_path
             self._display_image(self.selected_file)
-            logger.info("Поворот сброшен, восстановлено оригинальное изображение")
+            logger.info("Поворот и масштаб сброшены, восстановлено оригинальное изображение")
         else:
-            logger.warning("Оригинальный файл не найден для сброса поворота")
+            logger.warning("Оригинальный файл не найден для сброса")
+    
+    def _increase_scale(self):
+        """Увеличение масштаба изображения."""
+        current = self.image_scale.get()
+        new_scale = min(current + 0.1, 5.0)
+        self.image_scale.set(round(new_scale, 1))
+        self._apply_rotation()
+    
+    def _decrease_scale(self):
+        """Уменьшение масштаба изображения."""
+        current = self.image_scale.get()
+        new_scale = max(current - 0.1, 0.1)
+        self.image_scale.set(round(new_scale, 1))
+        self._apply_rotation()
+    
+    def _reset_scale(self):
+        """Сброс масштаба к 1:1."""
+        self.image_scale.set(1.0)
+        self._apply_rotation()
     
     def _apply_rotation(self):
-        """Применение поворота к изображению."""
+        """Применение поворота к изображению с одновременным масштабированием."""
         if not self.selected_file or not self.file_type == 'image':
             messagebox.showwarning("Предупреждение", "Сначала выберите изображение для поворота")
             return
         
         angle = self.rotation_angle.get()
+        scale = self.image_scale.get()
         
-        # Если угол 0 - сбрасываем к оригиналу
-        if abs(angle) < 0.01:
+        # Если угол 0 и масштаб 1 - сбрасываем к оригиналу
+        if abs(angle) < 0.01 and abs(scale - 1.0) < 0.01:
             self._reset_rotation()
             return
         
         try:
-            # Чтение текущего изображения
-            img_array = np.fromfile(self.selected_file, dtype=np.uint8)
+            # Чтение оригинального изображения
+            source_file = self.original_file_path if self.original_file_path else self.selected_file
+            img_array = np.fromfile(source_file, dtype=np.uint8)
             img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
             
             if img is None:
                 raise ValueError("Не удалось декодировать изображение")
             
-            # Поворот изображения
-            h, w = img.shape[:2]
-            center = (w / 2, h / 2)
-            rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
-            rotated = cv2.warpAffine(img, rotation_matrix, (w, h), borderMode=cv2.BORDER_REPLICATE)
+            # Сначала применяем поворот если есть
+            if abs(angle) > 0.01:
+                h, w = img.shape[:2]
+                center = (w / 2, h / 2)
+                rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+                img = cv2.warpAffine(img, rotation_matrix, (w, h), 
+                                     borderMode=cv2.BORDER_REPLICATE, 
+                                     flags=cv2.INTER_CUBIC)
+            
+            # Применяем масштабирование
+            if abs(scale - 1.0) > 0.01:
+                h, w = img.shape[:2]
+                new_w = int(w * scale)
+                new_h = int(h * scale)
+                img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
+                
+                # Убираем артефакты с помощью легкой медианной фильтрации
+                img = cv2.medianBlur(img, 3)
             
             # Создание временной папки если ещё не создана
             if self.rotated_temp_dir is None:
                 self.rotated_temp_dir = tempfile.mkdtemp(prefix="cslav_rotated_")
                 logger.debug(f"Создана временная папка: {self.rotated_temp_dir}")
             
-            # Сохранение повёрнутого изображения во временный файл
-            temp_filename = os.path.join(self.rotated_temp_dir, "rotated_image.png")
+            # Сохранение обработанного изображения во временный файл
+            temp_filename = os.path.join(self.rotated_temp_dir, "processed_image.png")
             
             # Используем imencode и сохраняем через numpy для поддержки кириллических путей
-            ret, buffer = cv2.imencode('.png', rotated)
+            ret, buffer = cv2.imencode('.png', img)
             if not ret:
-                raise ValueError("Не удалось закодировать повёрнутое изображение")
+                raise ValueError("Не удалось закодировать обработанное изображение")
             
             # Запись через numpy для поддержки кириллических путей
             with open(temp_filename, 'wb') as f:
@@ -676,15 +725,15 @@ class CSLAVOCRApp:
             
             # Обновление текущего файла
             self.selected_file = temp_filename
-            logger.info(f"Изображение повёрнуто на {angle}°, сохранено во временный файл")
+            logger.info(f"Изображение обработано: поворот {angle}°, масштаб {scale}x")
             
-            # Отображение повёрнутого изображения
+            # Отображение обработанного изображения
             self._display_image(temp_filename)
-            self.status_var.set(f"Изображение повёрнуто на {angle}°")
+            self.status_var.set(f"Поворот: {angle}°, Масштаб: {scale}x")
             
         except Exception as e:
-            logger.error(f"Ошибка при повороте изображения: {e}")
-            messagebox.showerror("Ошибка", f"Не удалось повернуть изображение:\n{e}")
+            logger.error(f"Ошибка при обработке изображения: {e}")
+            messagebox.showerror("Ошибка", f"Не удалось обработать изображение:\n{e}")
     
     def _save_result(self):
         """Сохранение результата в файл."""
