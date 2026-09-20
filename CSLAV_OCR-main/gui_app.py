@@ -152,7 +152,7 @@ class CSLAVOCRApp:
         self.save_interim_check = ttk.Checkbutton(params_inner2, text="Сохранять промежуточные", variable=self.save_interim)
         self.save_interim_check.pack(side=tk.LEFT, padx=10)
         
-        # Нижний ряд - поворот и управление
+        # Нижний ряд - поворот, масштаб и управление
         bottom_row = ttk.Frame(top_frame)
         bottom_row.pack(side=tk.TOP, fill=tk.X, pady=(5, 0))
         
@@ -167,6 +167,16 @@ class CSLAVOCRApp:
         ttk.Button(rotate_frame, text="⟲ 90°", command=lambda: self._rotate_by_90(90)).pack(side=tk.LEFT, padx=2)
         ttk.Button(rotate_frame, text="⟳ -90°", command=lambda: self._rotate_by_90(-90)).pack(side=tk.LEFT, padx=2)
         ttk.Button(rotate_frame, text="✕ Сброс", command=self._reset_rotation).pack(side=tk.LEFT, padx=2)
+        
+        # Панель масштабирования
+        zoom_frame = ttk.LabelFrame(bottom_row, text="Масштаб изображения", padding="5")
+        zoom_frame.pack(side=tk.LEFT, fill=tk.X, padx=5)
+        
+        ttk.Button(zoom_frame, text="🔍 +25%", command=lambda: self._zoom_image(1.25)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(zoom_frame, text="🔍 +50%", command=lambda: self._zoom_image(1.5)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(zoom_frame, text="🔎 -25%", command=lambda: self._zoom_image(0.75)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(zoom_frame, text="🔎 -50%", command=lambda: self._zoom_image(0.5)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(zoom_frame, text="✕ Оригинал", command=self._reset_zoom).pack(side=tk.LEFT, padx=2)
         
         # Правая часть - кнопки управления
         control_frame = ttk.LabelFrame(bottom_row, text="Управление", padding="5")
@@ -640,18 +650,34 @@ class CSLAVOCRApp:
             return
         
         try:
-            # Чтение текущего изображения
-            img_array = np.fromfile(self.selected_file, dtype=np.uint8)
+            # Чтение текущего изображения (оригинала, а не повёрнутого)
+            source_file = self.original_file_path if self.original_file_path else self.selected_file
+            img_array = np.fromfile(source_file, dtype=np.uint8)
             img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
             
             if img is None:
                 raise ValueError("Не удалось декодировать изображение")
             
-            # Поворот изображения
+            # Поворот изображения с вычислением новых размеров
             h, w = img.shape[:2]
             center = (w / 2, h / 2)
             rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
-            rotated = cv2.warpAffine(img, rotation_matrix, (w, h), borderMode=cv2.BORDER_REPLICATE)
+            
+            # Вычисление новых размеров для вписывания
+            cos = np.abs(rotation_matrix[0, 0])
+            sin = np.abs(rotation_matrix[0, 1])
+            new_w = int((h * sin) + (w * cos))
+            new_h = int((h * cos) + (w * sin))
+            
+            # Корректировка матрицы для центрирования
+            rotation_matrix[0, 2] += (new_w / 2) - center[0]
+            rotation_matrix[1, 2] += (new_h / 2) - center[1]
+            
+            # Поворот с антиалиасингом и белым фоном
+            rotated = cv2.warpAffine(img, rotation_matrix, (new_w, new_h),
+                                     borderMode=cv2.BORDER_CONSTANT,
+                                     borderValue=(255, 255, 255),
+                                     flags=cv2.INTER_CUBIC)
             
             # Создание временной папки если ещё не создана
             if self.rotated_temp_dir is None:
@@ -672,19 +698,102 @@ class CSLAVOCRApp:
             
             # Сохранение пути к оригиналу для возможности сброса
             if not self.original_file_path:
-                self.original_file_path = self.selected_file
+                self.original_file_path = source_file
             
             # Обновление текущего файла
             self.selected_file = temp_filename
             logger.info(f"Изображение повёрнуто на {angle}°, сохранено во временный файл")
             
+            # Полная очистка Canvas перед отрисовкой
+            self.canvas.delete("all")
+            self.canvas.image = None
+            
             # Отображение повёрнутого изображения
             self._display_image(temp_filename)
             self.status_var.set(f"Изображение повёрнуто на {angle}°")
             
+            # Сброс параметров предобработки
+            self._reset_preprocessing_params()
+            
         except Exception as e:
             logger.error(f"Ошибка при повороте изображения: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
             messagebox.showerror("Ошибка", f"Не удалось повернуть изображение:\n{e}")
+
+    def _reset_preprocessing_params(self):
+        """Сбросить параметры предобработки к значениям по умолчанию."""
+        self.min_symbol_height_var.set(10)
+        self.min_row_height_var.set(15)
+        self.row_threshold_var.set(10)
+        self.space_size_var.set(5)
+        logger.debug("Параметры предобработки сброшены")
+
+    def _zoom_image(self, factor: float):
+        """Масштабировать изображение."""
+        if not self.selected_file or not self.file_type == 'image':
+            messagebox.showwarning("Предупреждение", "Сначала выберите изображение")
+            return
+
+        try:
+            # Чтение текущего изображения
+            img_array = np.fromfile(self.selected_file, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                raise ValueError("Не удалось декодировать изображение")
+
+            # Масштабирование
+            new_w = int(img.shape[1] * factor)
+            new_h = int(img.shape[0] * factor)
+            
+            # Ограничение минимального размера
+            if new_w < 50 or new_h < 50:
+                messagebox.showwarning("Предупреждение", "Изображение слишком маленькое для масштабирования")
+                return
+                
+            resized = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
+
+            # Сохранение во временный файл (перезапись или создание нового)
+            if self.rotated_temp_dir:
+                temp_path = os.path.join(self.rotated_temp_dir, "rotated_image.png")
+            else:
+                self.rotated_temp_dir = tempfile.mkdtemp(prefix="cslav_zoomed_")
+                temp_path = os.path.join(self.rotated_temp_dir, "rotated_image.png")
+            
+            ret, buffer = cv2.imencode('.png', resized)
+            if not ret:
+                raise ValueError("Не удалось закодировать масштабированное изображение")
+            
+            with open(temp_path, 'wb') as f:
+                f.write(buffer.tobytes())
+
+            self.selected_file = temp_path
+            logger.info(f"Изображение масштабировано: {factor:.2f}x")
+
+            # Полная очистка Canvas
+            self.canvas.delete("all")
+            self.canvas.image = None
+            
+            # Отрисовка
+            self._display_image(temp_path)
+            self.status_var.set(f"Масштаб: {factor:.2f}x")
+
+        except Exception as e:
+            logger.error(f"Ошибка при масштабировании изображения: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            messagebox.showerror("Ошибка", f"Не удалось масштабировать изображение:\n{e}")
+
+    def _reset_zoom(self):
+        """Сбросить масштабирование к оригинальному изображению."""
+        if not self.original_file_path or not self.file_type == 'image':
+            messagebox.showwarning("Предупреждение", "Нет оригинального изображения для сброса")
+            return
+        
+        # Сброс к оригиналу через механизм сброса поворота
+        self._reset_rotation()
+        logger.info("Масштабирование сброшено к оригиналу")
     
     def _save_result(self):
         """Сохранение результата в файл."""
