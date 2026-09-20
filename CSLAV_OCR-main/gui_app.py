@@ -45,6 +45,7 @@ class CSLAVOCRApp:
         self.photo_image = None  # Ссылка на PhotoImage
         self.rotated_temp_dir = None  # Временная папка для повёрнутых изображений
         self.rotation_angle = tk.DoubleVar(value=0.0)  # Угол поворота в градусах
+        self.original_file_path = None  # Путь к оригинальному файлу для сброса поворота
         
         # Пути по умолчанию
         self.default_model_path = os.path.join(os.path.dirname(__file__), 'machine.h5')
@@ -66,6 +67,9 @@ class CSLAVOCRApp:
         self._create_top_panel()
         self._create_main_area()
         self._create_bottom_panel()
+        
+        # Привязка события изменения размера для обновления Canvas
+        self.root.bind("<Configure>", self._on_resize)
         
         # Загрузка модели при запуске
         self._load_model_async()
@@ -102,8 +106,12 @@ class CSLAVOCRApp:
         top_frame = ttk.Frame(self.root, padding="5")
         top_frame.pack(side=tk.TOP, fill=tk.X)
         
+        # Верхний ряд - кнопки файлов и параметры
+        top_row = ttk.Frame(top_frame)
+        top_row.pack(side=tk.TOP, fill=tk.X)
+        
         # Левая часть - кнопки выбора файла
-        file_frame = ttk.LabelFrame(top_frame, text="Файл", padding="5")
+        file_frame = ttk.LabelFrame(top_row, text="Файл", padding="5")
         file_frame.pack(side=tk.LEFT, fill=tk.X, padx=5)
         
         ttk.Button(file_frame, text="📁 Изображение", command=self._select_image).pack(side=tk.LEFT, padx=2)
@@ -113,57 +121,64 @@ class CSLAVOCRApp:
         self.file_label.pack(side=tk.LEFT, padx=10)
         
         # Центральная часть - параметры распознавания
-        params_frame = ttk.LabelFrame(top_frame, text="Параметры распознавания", padding="5")
+        params_frame = ttk.LabelFrame(top_row, text="Параметры распознавания", padding="5")
         params_frame.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
         
-        # Параметры в одну строку
-        params_inner = ttk.Frame(params_frame)
-        params_inner.pack(fill=tk.X)
+        # Параметры в две строки для компактности
+        params_inner1 = ttk.Frame(params_frame)
+        params_inner1.pack(fill=tk.X)
         
-        ttk.Label(params_inner, text="Мин. высота символа:").pack(side=tk.LEFT, padx=2)
-        ttk.Spinbox(params_inner, from_=5, to=100, textvariable=self.min_h_symbols, width=5).pack(side=tk.LEFT, padx=2)
+        ttk.Label(params_inner1, text="Мин. высота символа:").pack(side=tk.LEFT, padx=2)
+        ttk.Spinbox(params_inner1, from_=5, to=100, textvariable=self.min_h_symbols, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(params_inner, text="Мин. высота строки:").pack(side=tk.LEFT, padx=(10, 2))
-        ttk.Spinbox(params_inner, from_=20, to=200, textvariable=self.min_h_boxes, width=5).pack(side=tk.LEFT, padx=2)
+        ttk.Label(params_inner1, text="Мин. высота строки:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner1, from_=20, to=200, textvariable=self.min_h_boxes, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(params_inner, text="Порог строк:").pack(side=tk.LEFT, padx=(10, 2))
-        ttk.Spinbox(params_inner, from_=20, to=150, textvariable=self.edge_threshn, width=5).pack(side=tk.LEFT, padx=2)
+        ttk.Label(params_inner1, text="Порог строк:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner1, from_=20, to=150, textvariable=self.edge_threshn, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(params_inner, text="Размер пробела:").pack(side=tk.LEFT, padx=(10, 2))
-        ttk.Spinbox(params_inner, from_=10, to=150, textvariable=self.space_size, width=5).pack(side=tk.LEFT, padx=2)
+        params_inner2 = ttk.Frame(params_frame)
+        params_inner2.pack(fill=tk.X, pady=(2, 0))
         
-        ttk.Label(params_inner, text="Масштаб PDF:").pack(side=tk.LEFT, padx=(10, 2))
-        ttk.Spinbox(params_inner, from_=2.0, to=10.0, increment=0.5, textvariable=self.zoom_pdf, width=5).pack(side=tk.LEFT, padx=2)
+        ttk.Label(params_inner2, text="Размер пробела:").pack(side=tk.LEFT, padx=2)
+        ttk.Spinbox(params_inner2, from_=10, to=150, textvariable=self.space_size, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(params_inner, text="Страница:").pack(side=tk.LEFT, padx=(10, 2))
-        ttk.Spinbox(params_inner, from_=1, to=9999, textvariable=self.pdf_page, width=5).pack(side=tk.LEFT, padx=2)
+        ttk.Label(params_inner2, text="Масштаб PDF:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner2, from_=2.0, to=10.0, increment=0.5, textvariable=self.zoom_pdf, width=5).pack(side=tk.LEFT, padx=2)
         
-        self.save_interim_check = ttk.Checkbutton(params_inner, text="Сохранять промежуточные", variable=self.save_interim)
+        ttk.Label(params_inner2, text="Страница:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner2, from_=1, to=9999, textvariable=self.pdf_page, width=5).pack(side=tk.LEFT, padx=2)
+        
+        self.save_interim_check = ttk.Checkbutton(params_inner2, text="Сохранять промежуточные", variable=self.save_interim)
         self.save_interim_check.pack(side=tk.LEFT, padx=10)
         
-        # Правая часть - кнопки управления
-        control_frame = ttk.Frame(top_frame)
-        control_frame.pack(side=tk.RIGHT, padx=5)
-        
-        self.process_button = ttk.Button(control_frame, text="▶ Распознать", command=self._start_processing)
-        self.process_button.pack(side=tk.LEFT, padx=2)
-        
-        self.cancel_button = ttk.Button(control_frame, text="⏹ Отмена", command=self._cancel_processing, state=tk.DISABLED)
-        self.cancel_button.pack(side=tk.LEFT, padx=2)
-        
-        ttk.Button(control_frame, text="🗑 Очистить", command=self._clear_all).pack(side=tk.LEFT, padx=2)
+        # Нижний ряд - поворот и управление
+        bottom_row = ttk.Frame(top_frame)
+        bottom_row.pack(side=tk.TOP, fill=tk.X, pady=(5, 0))
         
         # Панель поворота изображения
-        rotate_frame = ttk.LabelFrame(top_frame, text="Поворот изображения", padding="5")
-        rotate_frame.pack(side=tk.RIGHT, fill=tk.X, padx=5)
+        rotate_frame = ttk.LabelFrame(bottom_row, text="Поворот изображения", padding="5")
+        rotate_frame.pack(side=tk.LEFT, fill=tk.X, padx=5)
         
         ttk.Label(rotate_frame, text="Угол (°):").pack(side=tk.LEFT, padx=2)
-        ttk.Spinbox(rotate_frame, from_=-360, to=360, increment=0.1, textvariable=self.rotation_angle, width=6, command=self._apply_rotation).pack(side=tk.LEFT, padx=2)
+        ttk.Spinbox(rotate_frame, from_=-360, to=360, increment=0.1, textvariable=self.rotation_angle, width=6).pack(side=tk.LEFT, padx=2)
         
         ttk.Button(rotate_frame, text="↻ Применить", command=self._apply_rotation).pack(side=tk.LEFT, padx=2)
         ttk.Button(rotate_frame, text="⟲ 90°", command=lambda: self._rotate_by_90(90)).pack(side=tk.LEFT, padx=2)
         ttk.Button(rotate_frame, text="⟳ -90°", command=lambda: self._rotate_by_90(-90)).pack(side=tk.LEFT, padx=2)
         ttk.Button(rotate_frame, text="✕ Сброс", command=self._reset_rotation).pack(side=tk.LEFT, padx=2)
+        
+        # Правая часть - кнопки управления
+        control_frame = ttk.LabelFrame(bottom_row, text="Управление", padding="5")
+        control_frame.pack(side=tk.RIGHT, padx=5)
+        
+        self.process_button = ttk.Button(control_frame, text="▶ Распознать", command=self._start_processing, width=12)
+        self.process_button.pack(side=tk.LEFT, padx=2)
+        
+        self.cancel_button = ttk.Button(control_frame, text="⏹ Отмена", command=self._cancel_processing, state=tk.DISABLED, width=8)
+        self.cancel_button.pack(side=tk.LEFT, padx=2)
+        
+        ttk.Button(control_frame, text="🗑 Очистить", command=self._clear_all, width=8).pack(side=tk.LEFT, padx=2)
     
     def _create_main_area(self):
         """Создание основной области с изображением слева и текстом справа."""
@@ -263,12 +278,23 @@ class CSLAVOCRApp:
         thread = threading.Thread(target=load, daemon=True)
         thread.start()
     
+    def _on_resize(self, event):
+        """Обработка изменения размера окна для обновления Canvas."""
+        # Обновляем отображение изображения при изменении размера окна
+        if hasattr(self, 'photo_image') and self.photo_image is not None:
+            # Небольшая задержка чтобы окно успело перерисоваться
+            self.root.after(100, self._refresh_image_display)
+    
+    def _refresh_image_display(self):
+        """Перерисовка текущего изображения с учётом новых размеров."""
+        if self.selected_file and self.file_type == 'image':
+            self._display_image(self.selected_file)
+    
     def _select_image(self):
         """Выбор изображения для распознавания."""
         # Очистка предыдущих временных файлов и сброс пути к оригиналу
         self._cleanup_temp_dir()
-        if hasattr(self, 'original_file_path'):
-            self.original_file_path = None
+        self.original_file_path = None
         
         filename = filedialog.askopenfilename(
             title="Выберите изображение",
@@ -283,7 +309,8 @@ class CSLAVOCRApp:
             self.rotation_angle.set(0.0)  # Сброс угла поворота
             self.file_label.config(text=os.path.basename(filename), foreground="black")
             self.status_var.set(f"Выбран файл: {os.path.basename(filename)}")
-            self._display_image(filename)
+            # Обновляем отображение после завершения основного цикла событий
+            self.root.after(100, lambda: self._display_image(filename))
     
     def _display_image(self, filepath):
         """Отображение изображения в левой панели."""
@@ -592,7 +619,7 @@ class CSLAVOCRApp:
         if self.rotated_temp_dir:
             self._cleanup_temp_dir()
         # Восстановление оригинального файла если он был
-        if hasattr(self, 'original_file_path') and self.original_file_path:
+        if self.original_file_path:
             self.selected_file = self.original_file_path
             self._display_image(self.selected_file)
             logger.info("Поворот сброшен, восстановлено оригинальное изображение")
@@ -642,7 +669,7 @@ class CSLAVOCRApp:
                 f.write(success.tobytes())
             
             # Сохранение пути к оригиналу для возможности сброса
-            if not hasattr(self, 'original_file_path') or self.original_file_path is None:
+            if not self.original_file_path:
                 self.original_file_path = self.selected_file
             
             # Обновление текущего файла
