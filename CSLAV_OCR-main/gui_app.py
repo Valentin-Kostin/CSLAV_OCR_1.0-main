@@ -9,13 +9,14 @@ import sys
 import threading
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, scrolledtext
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageFont
 from tensorflow.keras import models
 import cv2
 import numpy as np
 import pymupdf  # PyMuPDF (используем новый API)
 import tempfile
 import shutil
+import glob
 
 # Импорт утилит и логгера
 from ocr_utils import (
@@ -52,6 +53,11 @@ class CSLAVOCRApp:
         self.default_model_path = os.path.join(os.path.dirname(__file__), 'machine.h5')
         self.default_predictions_path = os.path.join(os.path.dirname(__file__), 'predictions.txt')
         
+        # Поиск шрифтов
+        self.available_fonts = self._find_available_fonts()
+        self.selected_font_var = tk.StringVar()
+        self.font_size_var = tk.IntVar(value=14)
+        
         # Настройки распознавания
         self.min_h_symbols = tk.IntVar(value=15)
         self.min_h_boxes = tk.IntVar(value=50)
@@ -72,8 +78,37 @@ class CSLAVOCRApp:
         # Привязка события изменения размера для обновления Canvas
         self.root.bind("<Configure>", self._on_resize)
         
+        # Установка шрифта по умолчанию
+        if self.available_fonts:
+            self.selected_font_var.set(self.available_fonts[0]['name'])
+        
         # Загрузка модели при запуске
         self._load_model_async()
+    
+    def _find_available_fonts(self):
+        """Поиск доступных шрифтов в папке со шрифтами."""
+        fonts = []
+        font_dirs = [
+            os.path.join(os.path.dirname(__file__), '..', 'Шрифты старорусские'),
+            os.path.join(os.getcwd(), 'Шрифты старорусские'),
+            os.path.join(os.getcwd(), '..', 'Шрифты старорусские'),
+        ]
+        
+        for font_dir in font_dirs:
+            if os.path.exists(font_dir):
+                ttf_files = glob.glob(os.path.join(font_dir, '*.ttf'))
+                ttf_files += glob.glob(os.path.join(font_dir, '*.TTF'))
+                for ttf_path in ttf_files:
+                    font_name = os.path.splitext(os.path.basename(ttf_path))[0]
+                    fonts.append({'name': font_name, 'path': ttf_path})
+        
+        # Добавляем стандартные шрифты
+        fonts.insert(0, {'name': 'Consolas', 'path': None})
+        fonts.insert(1, {'name': 'Arial', 'path': None})
+        fonts.insert(2, {'name': 'Times New Roman', 'path': None})
+        
+        logger.info(f"Найдено {len(fonts)} шрифтов")
+        return fonts
     
     def _create_menu(self):
         """Создание меню приложения."""
@@ -238,6 +273,22 @@ class CSLAVOCRApp:
         # Правая панель - распознанный текст
         right_frame = ttk.LabelFrame(main_area, text="Распознанный текст", padding="5")
         main_area.add(right_frame, weight=1)
+        
+        # Панель выбора шрифта
+        font_panel = ttk.Frame(right_frame)
+        font_panel.pack(fill=tk.X, pady=(0, 5))
+        
+        ttk.Label(font_panel, text="Шрифт:").pack(side=tk.LEFT, padx=2)
+        
+        # Создаем список шрифтов для combobox
+        font_names = [f['name'] for f in self.available_fonts]
+        self.font_combo = ttk.Combobox(font_panel, textvariable=self.selected_font_var, values=font_names, width=25, state="readonly")
+        self.font_combo.pack(side=tk.LEFT, padx=2)
+        self.font_combo.bind("<<ComboboxSelected>>", self._apply_font)
+        
+        ttk.Label(font_panel, text="Размер:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(font_panel, from_=8, to=72, textvariable=self.font_size_var, width=4, command=self._apply_font).pack(side=tk.LEFT, padx=2)
+        ttk.Button(font_panel, text="Применить", command=self._apply_font, width=8).pack(side=tk.LEFT, padx=2)
         
         self.result_text = scrolledtext.ScrolledText(right_frame, wrap=tk.WORD, font=("Consolas", 11))
         self.result_text.pack(fill=tk.BOTH, expand=True)
@@ -634,6 +685,35 @@ class CSLAVOCRApp:
         self.root.clipboard_clear()
         self.root.clipboard_append(text)
         self.status_var.set("Текст скопирован в буфер обмена")
+    
+    def _apply_font(self, event=None):
+        """Применение выбранного шрифта к полю результата."""
+        font_name = self.selected_font_var.get()
+        font_size = self.font_size_var.get()
+        
+        # Ищем путь к шрифту
+        font_path = None
+        for font in self.available_fonts:
+            if font['name'] == font_name:
+                font_path = font['path']
+                break
+        
+        try:
+            if font_path and os.path.exists(font_path):
+                # Загружаем шрифт из файла
+                pil_font = ImageFont.truetype(font_path, font_size)
+                # Для tkinter используем имя шрифта
+                self.result_text.config(font=(font_name, font_size))
+            else:
+                # Используем стандартный шрифт
+                self.result_text.config(font=(font_name, font_size))
+            
+            logger.info(f"Шрифт применён: {font_name}, размер: {font_size}")
+            self.status_var.set(f"Шрифт: {font_name}, размер: {font_size}")
+        except Exception as e:
+            logger.error(f"Ошибка при применении шрифта: {e}")
+            messagebox.showwarning("Шрифт", f"Не удалось применить шрифт: {font_name}\nИспользуется шрифт по умолчанию.")
+            self.result_text.config(font=("Consolas", font_size))
     
     def _clear_result(self):
         """Очистка поля результата."""
