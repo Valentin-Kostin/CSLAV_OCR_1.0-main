@@ -368,7 +368,18 @@ def get_edges(boxes, threshn, filename):
                     rows[-1].append(new_list[idx1][1])
                     new_list[idx1][0] = 0
     
-    img_for_rows = cv2.imread(filename)
+    # Исправление для путей с кириллицей в OpenCV на Windows
+    try:
+        img_array = numpy.fromfile(filename, dtype=numpy.uint8)
+        img_for_rows = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+    except Exception as e:
+        logger.error(f"Ошибка чтения изображения {filename}: {e}")
+        raise
+    
+    if img_for_rows is None:
+        logger.error(f"Не удалось декодировать изображение: {filename}")
+        raise ValueError(f"Не удалось прочитать изображение: {filename}")
+    
     edges = []
     for row in rows:
         x = img_for_rows.shape[0]
