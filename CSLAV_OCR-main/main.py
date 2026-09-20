@@ -1,7 +1,7 @@
 #крч есть +- документация и есть опциональные визуализации тоже за решетками
 
 import numpy, cv2, os
-from tensorflow import keras
+from tensorflow.keras import models, preprocessing
 
 class Symbol:
     #мне кажется так все таки довольно удобно
@@ -16,8 +16,8 @@ class Symbol:
         # нейросеть
         # список предсказаний (получается в функции decode_predictions)
         cv2.imwrite('symbol.png', matrix)
-        image = keras.preprocessing.image.load_img('symbol.png', target_size=(56, 56, 3))
-        input_arr = keras.preprocessing.image.img_to_array(image)
+        image = preprocessing.image.load_img('symbol.png', target_size=(56, 56, 3))
+        input_arr = preprocessing.image.img_to_array(image)
         num_arr = numpy.array([input_arr])
         result = model.predict([num_arr])
         for prediction in predictions_list:
@@ -85,7 +85,7 @@ def get_text(filename, prediction_file, model_name): #пока сборная ф
     def get_symbols(filename, prediction_file, model_name, min_h, max_h=700, max_w=400): #получение списка символов
         #аргументы примерно как в функции get_text
         #создаются объекты класса Symbol, т е про них известны координаты контуров и предсказанный символ
-        model = keras.models.load_model(model_name)
+        model = models.load_model(model_name)
         predictions_list = decode_predictions(prediction_file)
         img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
         #img_contours = cv2.imread(filename)

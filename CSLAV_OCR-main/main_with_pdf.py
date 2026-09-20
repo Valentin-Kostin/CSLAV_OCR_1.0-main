@@ -6,7 +6,7 @@ import collections
 import numpy
 import cv2
 import fitz
-import keras
+from tensorflow.keras import models, preprocessing
 from tkinter import *
 from tkinter import filedialog
 
@@ -23,8 +23,8 @@ class Symbol:
         # нейросеть
         # список предсказаний (получается в функции decode_predictions)
         cv2.imwrite('symbol.png', matrix)
-        image = keras.preprocessing.image.load_img('symbol.png', target_size=(56, 56, 3))
-        input_arr = keras.preprocessing.image.img_to_array(image)
+        image = preprocessing.image.load_img('symbol.png', target_size=(56, 56, 3))
+        input_arr = preprocessing.image.img_to_array(image)
         num_arr = numpy.array([input_arr])
         result = model.predict([num_arr])
         for prediction in predictions_list:
@@ -266,7 +266,7 @@ def main(model_name, predictions_file): #нужны файл с обученно
     print('0')
     fname = load_page_from_pdf(pdffile, page_number)
     print('1')
-    model = keras.models.load_model(model_name)
+    model = models.load_model(model_name)
     print('2', model)
     predictions_list = decode_predictions(predictions_file)
     os.chdir(result_dir)
