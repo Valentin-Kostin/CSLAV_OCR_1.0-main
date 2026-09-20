@@ -1,0 +1,22 @@
+FontName (Triodion-Caps-kUcs)
+FullName (Triodion Caps kUcs)
+AppleName (Triodion-Caps-kUcs)
+FamilyName (Triodion Caps kUcs)
+Version (2003.001)
+isFixedPitch false
+CharacterSet (cyrillicreg.cs)
+Encoding (cyrillic.enc)
+Pi true
+ItalicAngle 0
+CapHeight 676
+UnderlinePosition -45
+UnderlineThickness 7
+StemWidth 76
+Serif false
+MSMenuName (Triodion Caps kUcs)
+VPMenuName (Triodion Caps kUcs)
+WORDMenuName (Triodion Caps kUcs)
+VPStyle (N)
+WindowsCharSet 204
+WindowsFirstChar 32
+WindowsLastChar 255

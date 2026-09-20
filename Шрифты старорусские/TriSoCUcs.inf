@@ -1,0 +1,22 @@
+FontName (Triodion-Caps-Ucs-SpacedOut)
+FullName (Triodion Caps Ucs SpacedOut)
+AppleName (Triodion-Caps-Ucs-SpacedOut)
+FamilyName (Triodion Caps Ucs)
+Version (2003.001)
+isFixedPitch false
+CharacterSet (cyrillicit.cs)
+Encoding (cyrillic.enc)
+Pi true
+ItalicAngle 0
+CapHeight 676
+UnderlinePosition -45
+UnderlineThickness 7
+StemWidth 76
+Serif false
+MSMenuName (Triodion Caps Ucs)
+VPMenuName (Triodion Caps Ucs)
+WORDMenuName (Triodion Caps Ucs)
+VPStyle (I)
+WindowsCharSet 204
+WindowsFirstChar 32
+WindowsLastChar 255

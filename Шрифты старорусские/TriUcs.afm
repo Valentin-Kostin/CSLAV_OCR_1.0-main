@@ -1,0 +1,1859 @@
+StartFontMetrics 2.0
+Comment UniqueID 4777033
+Comment Panose 2 0 5 0 9 0 0 2 0 3
+FullName Triodion Ucs
+FontName Triodion-Ucs
+FamilyName Triodion Ucs
+Weight Normal
+Notice Copyright (c) Vladislav V. Dorosh, Calmius Software, 2003. All rights reserved.
+Version 2003.001
+IsFixedPitch false
+ItalicAngle 0.00
+FontBBox -632 -511 1032 1127
+Ascender 800
+Descender -500
+XHeight 437
+CapHeight 676
+UnderlinePosition -45
+UnderlineThickness 7
+EncodingScheme AdobeStandardCyrillic
+StartCharMetrics 225
+C 1 ; WX 427 ; N .null ; B 0 0 427 770 ;
+C 2 ; WX 500 ; N CR ; B 0 0 0 0 ;
+C 32 ; WX 450 ; N space ; B 0 0 0 0 ;
+C 33 ; WX 187 ; N exclam ; B 21 -3 165 700 ;
+C 34 ; WX 422 ; N quotedbl ; B -2 519 411 801 ;
+C 35 ; WX 1 ; N numbersign ; B -375 774 -105 1045 ;
+C 36 ; WX 1 ; N dollar ; B -449 752 -6 1035 ;
+C 37 ; WX 1 ; N percent ; B -420 713 -86 1043 ;
+C 38 ; WX 1 ; N ampersand ; B -565 745 -34 939 ;
+C 39 ; WX 254 ; N quotesingle ; B -3 541 204 767 ;
+C 40 ; WX 319 ; N parenleft ; B 48 -289 363 877 ;
+C 41 ; WX 319 ; N parenright ; B -44 -289 271 877 ;
+C 42 ; WX 387 ; N asterisk ; B 21 361 376 716 ;
+C 43 ; WX 1 ; N plus ; B -400 491 250 895 ;
+C 44 ; WX 305 ; N comma ; B 28 -196 279 190 ;
+C 45 ; WX 465 ; N hyphen ; B 25 165 436 235 ;
+C 46 ; WX 176 ; N period ; B 11 -3 155 140 ;
+C 47 ; WX 405 ; N slash ; B -35 -281 400 768 ;
+C 48 ; WX 442 ; N zero ; B 12 -11 430 766 ;
+C 49 ; WX 1 ; N one ; B -258 516 -70 765 ;
+C 50 ; WX 1 ; N two ; B -312 505 -114 752 ;
+C 51 ; WX 1 ; N three ; B -285 507 -86 746 ;
+C 52 ; WX 1 ; N four ; B -328 516 38 766 ;
+C 53 ; WX 1 ; N five ; B -295 499 62 893 ;
+C 54 ; WX 1 ; N six ; B -387 536 -58 734 ;
+C 55 ; WX 1 ; N seven ; B -407 536 20 765 ;
+C 56 ; WX 1 ; N eight ; B -209 524 -60 749 ;
+C 57 ; WX 636 ; N nine ; B 39 0 602 765 ;
+C 58 ; WX 204 ; N colon ; B 32 0 176 449 ;
+C 59 ; WX 314 ; N semicolon ; B 15 -196 294 459 ;
+C 60 ; WX 1 ; N less ; B -419 608 40 857 ;
+C 61 ; WX 1 ; N equal ; B -400 507 230 895 ;
+C 62 ; WX 1 ; N greater ; B -400 492 230 895 ;
+C 63 ; WX 1 ; N question ; B -400 504 230 895 ;
+C 64 ; WX 1 ; N at ; B -415 766 -100 1013 ;
+C 65 ; WX 407 ; N A ; B 32 -8 365 752 ;
+C 66 ; WX 597 ; N B ; B 41 0 553 944 ;
+C 67 ; WX 1 ; N C ; B -516 701 92 1095 ;
+C 68 ; WX 473 ; N D ; B 13 -177 688 897 ;
+C 69 ; WX 280 ; N E ; B -34 -2 243 752 ;
+C 70 ; WX 861 ; N F ; B 2 -12 877 688 ;
+C 71 ; WX 379 ; N G ; B -16 0 411 765 ;
+C 72 ; WX 699 ; N H ; B 38 -7 659 763 ;
+C 73 ; WX 270 ; N I ; B 22 0 248 676 ;
+C 74 ; WX 230 ; N J ; B -45 0 179 752 ;
+C 75 ; WX 777 ; N K ; B 22 0 755 1047 ;
+C 76 ; WX 418 ; N L ; B 1 0 456 825 ;
+C 77 ; WX 619 ; N M ; B 27 0 606 876 ;
+C 78 ; WX 1036 ; N N ; B 31 -66 1005 1080 ;
+C 79 ; WX 1036 ; N O ; B 31 -66 1005 742 ;
+C 80 ; WX 850 ; N P ; B 17 -257 935 1130 ;
+C 81 ; WX 870 ; N Q ; B 24 -4 848 770 ;
+C 82 ; WX 352 ; N R ; B -34 -437 393 765 ;
+C 83 ; WX 665 ; N S ; B 41 -1 616 752 ;
+C 84 ; WX 987 ; N T ; B 36 -6 951 873 ;
+C 85 ; WX 1042 ; N U ; B 37 -448 1032 682 ;
+C 86 ; WX 616 ; N V ; B 27 0 606 683 ;
+C 87 ; WX 972 ; N W ; B 38 -8 939 703 ;
+C 88 ; WX 597 ; N X ; B 33 -310 569 882 ;
+C 89 ; WX 381 ; N Y ; B 16 0 404 862 ;
+C 90 ; WX 859 ; N Z ; B 22 0 837 676 ;
+C 91 ; WX 304 ; N bracketleft ; B 56 -240 304 800 ;
+C 92 ; WX 1 ; N backslash ; B -632 790 -117 1012 ;
+C 93 ; WX 304 ; N bracketright ; B 0 -240 248 800 ;
+C 94 ; WX 1 ; N asciicircum ; B -426 775 -97 973 ;
+C 95 ; WX 1 ; N underscore ; B -200 749 -36 969 ;
+C 96 ; WX 235 ; N grave ; B 21 450 211 747 ;
+C 97 ; WX 407 ; N a ; B 32 -8 395 765 ;
+C 98 ; WX 1 ; N b ; B -418 519 235 886 ;
+C 99 ; WX 1 ; N c ; B -392 503 216 897 ;
+C 100 ; WX 1 ; N d ; B -354 499 101 825 ;
+C 101 ; WX 280 ; N e ; B 43 -2 287 765 ;
+C 102 ; WX 714 ; N f ; B 30 -158 698 442 ;
+C 103 ; WX 1 ; N g ; B -400 506 230 895 ;
+C 104 ; WX 574 ; N h ; B 52 0 529 765 ;
+C 105 ; WX 230 ; N i ; B 62 0 179 437 ;
+C 106 ; WX 230 ; N j ; B 62 0 254 765 ;
+C 107 ; WX 580 ; N k ; B 58 -8 530 747 ;
+C 108 ; WX 418 ; N l ; B -9 0 418 765 ;
+C 109 ; WX 537 ; N m ; B 27 0 513 636 ;
+C 110 ; WX 722 ; N n ; B 46 -43 674 747 ;
+C 111 ; WX 722 ; N o ; B 46 -43 674 480 ;
+C 112 ; WX 853 ; N p ; B 24 -511 830 798 ;
+C 113 ; WX 870 ; N q ; B 24 -4 848 770 ;
+C 114 ; WX 352 ; N r ; B -55 -437 553 897 ;
+C 115 ; WX 665 ; N s ; B 41 -1 616 765 ;
+C 116 ; WX 699 ; N t ; B 34 -7 659 737 ;
+C 117 ; WX 738 ; N u ; B 30 -448 728 450 ;
+C 118 ; WX 537 ; N v ; B 27 0 513 442 ;
+C 119 ; WX 699 ; N w ; B 38 -7 659 450 ;
+C 120 ; WX 547 ; N x ; B 16 -307 506 651 ;
+C 121 ; WX 381 ; N y ; B 16 0 404 846 ;
+C 122 ; WX 665 ; N z ; B 41 -1 616 437 ;
+C 123 ; WX 381 ; N braceleft ; B 16 0 404 803 ;
+C 124 ; WX 665 ; N bar ; B 41 -1 616 893 ;
+C 125 ; WX 453 ; N braceright ; B 4 0 431 765 ;
+C 126 ; WX 1 ; N asciitilde ; B -255 738 -67 1033 ;
+C 128 ; WX 537 ; N afii10051 ; B 27 0 513 765 ;
+C 129 ; WX 521 ; N afii10052 ; B 14 0 629 1032 ;
+C 130 ; WX 245 ; N quotesinglbase ; B 36 -157 219 125 ;
+C 131 ; WX 407 ; N afii10100 ; B 32 -8 466 766 ;
+C 132 ; WX 457 ; N quotedblbase ; B 36 -157 434 125 ;
+C 133 ; WX 547 ; N ellipsis ; B 16 -307 506 903 ;
+C 134 ; WX 407 ; N dagger ; B 32 -8 378 734 ;
+C 135 ; WX 230 ; N daggerdbl ; B -47 0 282 734 ;
+C 136 ; WX 1 ; N Euro ; B -497 490 67 815 ;
+C 137 ; WX 665 ; N perthousand ; B 41 -1 616 734 ;
+C 138 ; WX 859 ; N afii10058 ; B 22 0 837 1045 ;
+C 139 ; WX 230 ; N guilsinglleft ; B -115 0 312 765 ;
+C 140 ; WX 972 ; N afii10059 ; B 38 -8 939 1070 ;
+C 141 ; WX 1042 ; N afii10061 ; B 37 -448 1032 766 ;
+C 142 ; WX 777 ; N afii10060 ; B 22 0 755 1056 ;
+C 143 ; WX 1036 ; N afii10145 ; B 31 -66 1005 1080 ;
+C 144 ; WX 537 ; N afii10099 ; B 27 0 766 895 ;
+C 145 ; WX 225 ; N quoteleft ; B 23 522 206 804 ;
+C 146 ; WX 225 ; N quoteright ; B 24 518 207 800 ;
+C 147 ; WX 436 ; N quotedblleft ; B 23 522 416 804 ;
+C 148 ; WX 436 ; N quotedblright ; B 19 515 412 797 ;
+C 149 ; WX 1 ; N bullet ; B -358 492 19 774 ;
+C 150 ; WX 465 ; N endash ; B 25 165 436 235 ;
+C 151 ; WX 641 ; N emdash ; B 30 165 618 235 ;
+C 153 ; WX 632 ; N trademark ; B 37 0 609 761 ;
+C 154 ; WX 665 ; N afii10106 ; B 41 -1 616 739 ;
+C 155 ; WX 537 ; N guilsinglright ; B 27 0 513 734 ;
+C 156 ; WX 699 ; N afii10107 ; B 38 -7 659 746 ;
+C 157 ; WX 738 ; N afii10109 ; B 30 -448 728 766 ;
+C 158 ; WX 580 ; N afii10108 ; B 58 -8 530 766 ;
+C 159 ; WX 722 ; N afii10193 ; B 46 -43 674 766 ;
+C 160 ; WX 450 ; N nbspace ; B 0 0 0 0 ;
+C 161 ; WX 1042 ; N afii10062 ; B 37 -448 1032 745 ;
+C 162 ; WX 738 ; N afii10110 ; B 30 -448 728 746 ;
+C 163 ; WX 270 ; N afii10057 ; B -69 0 374 1035 ;
+C 164 ; WX 307 ; N currency ; B 12 -204 295 279 ;
+C 165 ; WX 521 ; N afii10050 ; B 14 0 519 1029 ;
+C 166 ; WX 480 ; N brokenbar ; B 18 -448 447 765 ;
+C 167 ; WX 401 ; N section ; B -15 0 412 765 ;
+C 168 ; WX 597 ; N afii10023 ; B 41 0 581 802 ;
+C 169 ; WX 281 ; N copyright ; B -85 -2 342 765 ;
+C 170 ; WX 373 ; N afii10053 ; B 8 87 345 424 ;
+C 171 ; WX 510 ; N guillemotleft ; B 48 -5 497 437 ;
+C 172 ; WX 466 ; N logicalnot ; B 25 66 440 235 ;
+C 173 ; WX 465 ; N sfthyphen ; B 25 165 436 235 ;
+C 174 ; WX 352 ; N registered ; B -49 -437 406 825 ;
+C 175 ; WX 270 ; N afii10056 ; B 1 0 271 1045 ;
+C 176 ; WX 362 ; N degree ; B 20 510 349 708 ;
+C 177 ; WX 580 ; N plusminus ; B 58 -8 530 893 ;
+C 178 ; WX 270 ; N afii10055 ; B 7 0 248 876 ;
+C 179 ; WX 230 ; N afii10103 ; B -2 0 223 636 ;
+C 180 ; WX 407 ; N afii10098 ; B 32 -8 365 746 ;
+C 181 ; WX 484 ; N mu ; B 30 -448 469 446 ;
+C 182 ; WX 614 ; N paragraph ; B 32 -277 477 678 ;
+C 183 ; WX 159 ; N periodcentered ; B 37 170 125 260 ;
+C 184 ; WX 597 ; N afii10071 ; B 41 0 592 802 ;
+C 185 ; WX 407 ; N afii61352 ; B 4 -8 431 765 ;
+C 186 ; WX 464 ; N afii10101 ; B 50 -164 417 444 ;
+C 187 ; WX 510 ; N guillemotright ; B 13 -5 462 437 ;
+C 188 ; WX 230 ; N afii10105 ; B -46 0 320 766 ;
+C 189 ; WX 560 ; N afii10054 ; B 25 -17 518 682 ;
+C 190 ; WX 566 ; N afii10102 ; B 40 -11 521 446 ;
+C 191 ; WX 230 ; N afii10104 ; B 20 0 219 746 ;
+C 192 ; WX 521 ; N afii10017 ; B 14 0 500 676 ;
+C 193 ; WX 547 ; N afii10018 ; B 22 0 525 676 ;
+C 194 ; WX 539 ; N afii10019 ; B 22 0 514 680 ;
+C 195 ; WX 490 ; N afii10020 ; B 22 0 481 676 ;
+C 196 ; WX 570 ; N afii10021 ; B 11 -156 561 676 ;
+C 197 ; WX 540 ; N afii10022 ; B 40 -2 513 684 ;
+C 198 ; WX 826 ; N afii10024 ; B 22 0 804 681 ;
+C 199 ; WX 667 ; N afii10025 ; B 30 -15 630 686 ;
+C 200 ; WX 542 ; N afii10026 ; B 22 0 520 676 ;
+C 201 ; WX 542 ; N afii10027 ; B 22 0 520 944 ;
+C 202 ; WX 556 ; N afii10028 ; B 22 0 533 676 ;
+C 203 ; WX 537 ; N afii10029 ; B 22 0 515 676 ;
+C 204 ; WX 838 ; N afii10030 ; B 22 0 816 676 ;
+C 205 ; WX 542 ; N afii10031 ; B 22 0 520 676 ;
+C 206 ; WX 590 ; N afii10032 ; B 46 -5 550 682 ;
+C 207 ; WX 542 ; N afii10033 ; B 22 0 520 676 ;
+C 208 ; WX 566 ; N afii10034 ; B 22 0 533 680 ;
+C 209 ; WX 573 ; N afii10035 ; B 35 -2 542 685 ;
+C 210 ; WX 626 ; N afii10036 ; B 5 0 628 676 ;
+C 211 ; WX 552 ; N afii10037 ; B 25 -1 543 687 ;
+C 212 ; WX 728 ; N afii10038 ; B 25 0 705 676 ;
+C 213 ; WX 522 ; N afii10039 ; B 19 0 515 681 ;
+C 214 ; WX 549 ; N afii10040 ; B 13 -261 527 676 ;
+C 215 ; WX 532 ; N afii10041 ; B 22 0 510 676 ;
+C 216 ; WX 870 ; N afii10042 ; B 22 0 848 676 ;
+C 217 ; WX 870 ; N afii10043 ; B 22 -268 848 676 ;
+C 218 ; WX 547 ; N afii10044 ; B 23 0 501 676 ;
+C 219 ; WX 784 ; N afii10045 ; B 22 0 762 676 ;
+C 220 ; WX 540 ; N afii10046 ; B 22 0 518 676 ;
+C 221 ; WX 744 ; N afii10047 ; B 3 0 722 676 ;
+C 222 ; WX 791 ; N afii10048 ; B 22 0 787 679 ;
+C 223 ; WX 777 ; N afii10049 ; B 22 0 755 676 ;
+C 224 ; WX 407 ; N afii10065 ; B 32 -8 365 437 ;
+C 225 ; WX 442 ; N afii10066 ; B 59 0 397 450 ;
+C 226 ; WX 416 ; N afii10067 ; B 64 0 383 437 ;
+C 227 ; WX 379 ; N afii10068 ; B 64 0 349 437 ;
+C 228 ; WX 473 ; N afii10069 ; B 13 -177 465 438 ;
+C 229 ; WX 280 ; N afii10070 ; B 43 -2 243 442 ;
+C 230 ; WX 636 ; N afii10072 ; B 39 0 602 439 ;
+C 231 ; WX 450 ; N afii10073 ; B 20 -137 411 439 ;
+C 232 ; WX 453 ; N afii10074 ; B 55 0 401 437 ;
+C 233 ; WX 453 ; N afii10075 ; B 55 0 401 712 ;
+C 234 ; WX 442 ; N afii10076 ; B 57 0 410 442 ;
+C 235 ; WX 418 ; N afii10077 ; B 26 0 383 437 ;
+C 236 ; WX 685 ; N afii10078 ; B 35 0 649 437 ;
+C 237 ; WX 458 ; N afii10079 ; B 61 0 400 437 ;
+C 238 ; WX 442 ; N afii10080 ; B 12 -11 430 447 ;
+C 239 ; WX 461 ; N afii10081 ; B 60 0 408 437 ;
+C 240 ; WX 352 ; N afii10082 ; B 39 -437 315 459 ;
+C 241 ; WX 281 ; N afii10083 ; B 44 -2 238 442 ;
+C 242 ; WX 632 ; N afii10084 ; B 37 0 609 437 ;
+C 243 ; WX 381 ; N afii10085 ; B 16 0 395 804 ;
+C 244 ; WX 611 ; N afii10086 ; B 28 -363 583 701 ;
+C 245 ; WX 480 ; N afii10087 ; B 24 -448 447 444 ;
+C 246 ; WX 499 ; N afii10088 ; B 60 -388 484 437 ;
+C 247 ; WX 401 ; N afii10089 ; B 29 0 350 437 ;
+C 248 ; WX 668 ; N afii10090 ; B 59 0 616 437 ;
+C 249 ; WX 668 ; N afii10091 ; B 59 -414 616 437 ;
+C 250 ; WX 446 ; N afii10092 ; B 31 0 411 437 ;
+C 251 ; WX 574 ; N afii10093 ; B 52 0 529 444 ;
+C 252 ; WX 402 ; N afii10094 ; B 50 0 370 437 ;
+C 253 ; WX 597 ; N afii10095 ; B 41 0 553 802 ;
+C 254 ; WX 506 ; N afii10096 ; B 54 -10 460 443 ;
+C 255 ; WX 580 ; N afii10097 ; B 58 -8 530 437 ;
+C -1 ; WX 159 ; N periodcentered.001 ; B 37 170 125 260 ;
+EndCharMetrics
+StartKernData
+StartKernPairs 1499
+KPX parenleft r 32
+KPX parenleft afii10082 32
+KPX parenleft R 32
+KPX parenleft registered 32
+
+KPX asterisk Z -94
+KPX asterisk F -102
+KPX asterisk o -39
+KPX asterisk f -90
+KPX asterisk afii10021 -102
+KPX asterisk z -101
+KPX asterisk afii10086 -54
+KPX asterisk afii10030 -102
+KPX asterisk afii10038 -35
+KPX asterisk afii10069 -78
+KPX asterisk afii10078 -66
+KPX asterisk afii10065 -55
+KPX asterisk afii10029 -102
+KPX asterisk afii10077 -55
+
+KPX slash afii61352 -75
+KPX slash f -55
+KPX slash o -20
+KPX slash A -75
+KPX slash afii10069 -75
+KPX slash l -75
+KPX slash bar -20
+KPX slash afii10021 -82
+KPX slash z -70
+KPX slash zero -28
+KPX slash a -75
+KPX slash S -70
+KPX slash Z -74
+KPX slash afii10193 -20
+KPX slash L -75
+KPX slash afii10058 -74
+KPX slash afii10106 -70
+KPX slash D -75
+KPX slash afii10078 -75
+KPX slash afii10077 -75
+KPX slash afii10080 -28
+KPX slash afii10065 -75
+KPX slash afii10032 -39
+KPX slash afii10098 -75
+KPX slash n -20
+KPX slash dagger -75
+KPX slash perthousand -70
+KPX slash s -70
+KPX slash slash -240
+KPX slash afii10100 -75
+
+KPX zero afii10077 -15
+KPX zero f -31
+KPX zero z -20
+KPX zero v -10
+KPX zero slash -43
+KPX zero afii61352 -10
+KPX zero afii10099 -10
+KPX zero afii10078 -10
+KPX zero D -10
+KPX zero afii10065 -10
+KPX zero m -10
+KPX zero l -15
+KPX zero brokenbar -20
+KPX zero afii10069 -10
+KPX zero L -15
+KPX zero afii10087 -20
+
+KPX A degree -27
+
+KPX B brokenbar -15
+KPX B t -10
+KPX B w -10
+KPX B o -15
+KPX B afii10080 -10
+KPX B afii10087 -15
+
+KPX D afii10071 -10
+KPX D guilsinglright -25
+KPX D B -10
+KPX D afii10095 -10
+KPX D afii10089 -25
+KPX D afii10087 -11
+KPX D degree -27
+KPX D afii10023 -10
+KPX D afii10051 -25
+KPX D m -25
+KPX D w -10
+KPX D v -25
+KPX D t -10
+KPX D H -10
+
+KPX F s -20
+KPX F z -20
+KPX F S -20
+KPX F asterisk -114
+KPX F perthousand -20
+
+KPX G s -40
+KPX G afii10101 -15
+KPX G a -40
+KPX G x -15
+KPX G zero -15
+KPX G afii10077 -40
+KPX G comma -50
+KPX G slash -82
+KPX G afii10080 -15
+KPX G afii10082 -10
+KPX G afii10069 -40
+KPX G afii10065 -40
+KPX G perthousand -40
+KPX G f -80
+KPX G o -15
+KPX G S -40
+KPX G period -50
+KPX G z -40
+KPX G afii10078 -40
+KPX G afii10086 -15
+
+KPX H z -40
+KPX H D -30
+KPX H afii10065 -20
+KPX H afii10069 -30
+KPX H slash -50
+KPX H afii61352 -20
+KPX H f -45
+KPX H l -25
+KPX H L -25
+KPX H afii10078 -20
+KPX H afii10077 -25
+
+KPX L m -20
+KPX L degree -27
+KPX L afii10073 -10
+KPX L H -10
+KPX L t -10
+KPX L v -20
+KPX L w -10
+KPX L afii10051 -20
+KPX L afii10087 -16
+KPX L afii10089 -16
+KPX L guilsinglright -20
+
+KPX M afii10073 -30
+KPX M slash -98
+KPX M afii10082 -30
+KPX M afii10065 -50
+KPX M afii10069 -50
+KPX M afii10080 -30
+KPX M afii10078 -40
+KPX M afii10077 -39
+KPX M afii10087 -28
+KPX M afii10086 -40
+KPX M comma -70
+KPX M perthousand -50
+KPX M H -20
+KPX M period -50
+KPX M o -40
+KPX M zero -30
+KPX M f -70
+KPX M w -20
+KPX M s -50
+KPX M a -50
+KPX M z -50
+KPX M afii10102 -30
+KPX M afii10101 -30
+
+KPX N perthousand -20
+KPX N f -40
+KPX N s -20
+KPX N slash -55
+KPX N comma -30
+KPX N S -20
+KPX N D -20
+KPX N afii10069 -20
+KPX N period -24
+KPX N z -20
+
+KPX O comma -30
+KPX O D -20
+KPX O perthousand -20
+KPX O S -20
+KPX O f -40
+KPX O s -20
+KPX O slash -55
+KPX O period -24
+KPX O z -20
+KPX O afii10069 -20
+
+KPX P afii10103 74
+KPX P afii10101 -30
+KPX P z -50
+KPX P a -20
+KPX P o -30
+KPX P t 46
+KPX P w -20
+KPX P period -66
+KPX P slash -89
+KPX P H -20
+KPX P perthousand -50
+KPX P comma -55
+KPX P afii10077 -20
+KPX P afii10065 -20
+KPX P s -50
+
+KPX R s -10
+KPX R perthousand -10
+KPX R z -10
+KPX R S -10
+
+KPX S degree -90
+
+KPX T perthousand -30
+KPX T comma -27
+KPX T D -10
+KPX T afii10069 -10
+KPX T z -30
+KPX T S -30
+KPX T f -28
+KPX T s -30
+KPX T slash -47
+
+KPX U afii10078 -40
+KPX U afii10086 -35
+KPX U A -40
+KPX U D -50
+KPX U afii10065 -40
+KPX U l -40
+KPX U perthousand -59
+KPX U dagger -40
+KPX U L -40
+KPX U comma -70
+KPX U S -59
+KPX U a -40
+KPX U f -78
+KPX U s -59
+KPX U slash -67
+KPX U period -39
+KPX U afii61352 -40
+KPX U afii10101 -16
+KPX U z -59
+KPX U afii10077 -40
+KPX U afii10069 -50
+
+KPX V H -20
+KPX V z -50
+KPX V afii10102 -30
+KPX V afii10101 -30
+KPX V period -50
+KPX V slash -98
+KPX V w -20
+KPX V s -50
+KPX V o -40
+KPX V f -70
+KPX V zero -30
+KPX V a -50
+KPX V comma -70
+KPX V perthousand -50
+KPX V afii10069 -50
+KPX V afii10086 -40
+KPX V afii10087 -28
+KPX V afii10080 -30
+KPX V afii10082 -30
+KPX V afii10077 -39
+KPX V afii10078 -40
+KPX V afii10073 -30
+KPX V afii10065 -50
+
+KPX W slash -78
+KPX W period -47
+KPX W s -55
+KPX W f -60
+KPX W a -30
+KPX W z -55
+KPX W afii10069 -30
+KPX W afii10065 -30
+KPX W afii10077 -20
+KPX W afii10078 -20
+KPX W comma -47
+KPX W perthousand -55
+
+KPX Y parenright 42
+KPX Y bracketright 70
+KPX Y slash -31
+KPX Y degree 39
+
+KPX Z afii10051 -30
+KPX Z afii10099 -30
+KPX Z m -30
+KPX Z brokenbar -20
+KPX Z section -20
+KPX Z v -30
+KPX Z guilsinglright -30
+KPX Z asterisk -86
+KPX Z afii10087 -20
+KPX Z afii10089 -20
+
+KPX a afii10087 -10
+KPX a degree -27
+KPX a m -10
+KPX a o -10
+KPX a t -15
+KPX a v -10
+KPX a mu -15
+KPX a w -15
+KPX a afii10089 -10
+
+KPX e z -10
+
+KPX f afii10095 -74
+KPX f afii10080 -16
+KPX f afii10089 -62
+KPX f afii10084 -54
+KPX f afii10085 -23
+KPX f asterisk -157
+KPX f guilsinglright -70
+KPX f o -24
+KPX f zero -16
+KPX f w -35
+KPX f t -35
+KPX f H -35
+KPX f afii10023 -74
+KPX f afii10071 -74
+KPX f degree -71
+KPX f trademark -54
+KPX f Y -23
+KPX f afii10051 -70
+KPX f braceleft -23
+KPX f B -74
+KPX f m -70
+KPX f afii10099 -70
+KPX f section -62
+KPX f v -70
+KPX f y -23
+
+KPX l v -20
+KPX l degree -27
+KPX l afii10073 -10
+KPX l afii10087 -16
+KPX l afii10089 -16
+KPX l guilsinglright -20
+KPX l H -10
+KPX l t -10
+KPX l w -10
+KPX l m -20
+KPX l afii10051 -20
+
+KPX m afii10069 -40
+KPX m afii10077 -45
+KPX m afii10078 -50
+KPX m afii10086 -30
+KPX m D -40
+KPX m l -45
+KPX m perthousand -60
+KPX m L -45
+KPX m comma -50
+KPX m slash -79
+KPX m a -40
+KPX m f -80
+KPX m s -60
+KPX m z -60
+KPX m afii61352 -40
+KPX m dagger -40
+KPX m afii10065 -40
+KPX m A -40
+KPX m period -50
+KPX m S -60
+
+KPX n afii10099 -20
+KPX n guilsinglright -20
+KPX n m -20
+KPX n afii10051 -20
+KPX n v -20
+KPX n afii10087 -10
+KPX n afii10089 -10
+KPX n afii10078 -15
+KPX n afii10077 -15
+KPX n L -15
+KPX n perthousand -27
+KPX n s -27
+KPX n f -31
+KPX n S -27
+KPX n slash -54
+KPX n degree -35
+KPX n brokenbar -10
+KPX n section -10
+KPX n z -27
+KPX n l -15
+
+KPX o section -10
+KPX o brokenbar -10
+KPX o degree -35
+KPX o afii10051 -20
+KPX o z -27
+KPX o m -20
+KPX o afii10099 -20
+KPX o S -27
+KPX o f -31
+KPX o v -20
+KPX o s -27
+KPX o slash -54
+KPX o asterisk -39
+KPX o l -15
+KPX o guilsinglright -20
+KPX o perthousand -27
+KPX o L -15
+KPX o afii10078 -15
+KPX o afii10077 -15
+KPX o afii10089 -10
+KPX o afii10087 -10
+
+KPX p a -50
+KPX p s -90
+KPX p period -60
+KPX p slash -110
+KPX p afii61352 -50
+KPX p z -90
+KPX p afii10078 -55
+KPX p perthousand -90
+KPX p L -50
+KPX p afii10065 -50
+KPX p S -90
+KPX p afii10077 -50
+KPX p A -50
+KPX p afii10101 -27
+KPX p dagger -50
+KPX p comma -78
+KPX p l -50
+
+KPX r perthousand -10
+KPX r z -10
+KPX r S -10
+KPX r s -10
+
+KPX s afii10073 -15
+KPX s afii10087 -40
+KPX s afii10086 -12
+KPX s afii10085 -20
+KPX s afii10084 -30
+KPX s afii10089 -60
+KPX s afii10080 -20
+KPX s afii10095 -50
+KPX s t -30
+KPX s w -30
+KPX s v -70
+KPX s p -70
+KPX s o -32
+KPX s afii10099 -70
+KPX s trademark -30
+KPX s degree -90
+KPX s section -60
+KPX s u -16
+KPX s m -70
+KPX s brokenbar -40
+
+KPX t z -40
+KPX t afii61352 -20
+KPX t slash -50
+KPX t S -40
+KPX t a -20
+KPX t f -45
+KPX t s -40
+KPX t l -25
+KPX t dagger -20
+KPX t perthousand -40
+KPX t L -25
+KPX t afii10065 -20
+KPX t afii10069 -30
+KPX t afii10077 -25
+KPX t afii10078 -20
+KPX t A -20
+KPX t D -30
+
+KPX u afii10078 -40
+KPX u afii10065 -40
+KPX u D -50
+KPX u afii10069 -50
+KPX u afii10077 -40
+KPX u slash -70
+KPX u period -50
+KPX u S -59
+KPX u a -40
+KPX u f -78
+KPX u s -59
+KPX u z -59
+KPX u afii61352 -40
+KPX u afii10101 -16
+KPX u afii10086 -35
+KPX u A -40
+KPX u l -40
+KPX u dagger -40
+KPX u perthousand -59
+KPX u L -40
+KPX u comma -50
+
+KPX v s -60
+KPX v afii61352 -40
+KPX v slash -79
+KPX v l -45
+KPX v perthousand -60
+KPX v dagger -40
+KPX v L -45
+KPX v comma -50
+KPX v afii10065 -40
+KPX v afii10069 -40
+KPX v afii10078 -50
+KPX v afii10077 -45
+KPX v afii10086 -30
+KPX v A -40
+KPX v D -40
+KPX v z -60
+KPX v period -50
+KPX v S -60
+KPX v a -40
+KPX v f -80
+
+KPX w z -40
+KPX w f -45
+KPX w a -20
+KPX w S -40
+KPX w slash -50
+KPX w L -25
+KPX w perthousand -40
+KPX w dagger -20
+KPX w l -25
+KPX w D -30
+KPX w A -20
+KPX w afii10078 -20
+KPX w afii10077 -25
+KPX w afii10069 -30
+KPX w afii10065 -20
+KPX w s -40
+KPX w afii61352 -20
+
+KPX x v -15
+KPX x afii10099 -15
+KPX x m -15
+KPX x afii10051 -15
+KPX x guilsinglright -15
+
+KPX y brokenbar -10
+KPX y degree 39
+KPX y afii10103 24
+KPX y z -10
+KPX y bracketright 70
+KPX y f -20
+KPX y slash -31
+KPX y parenright 42
+KPX y D -10
+KPX y afii10087 -10
+KPX y afii10069 -10
+
+KPX z afii10051 -70
+KPX z braceleft -20
+KPX z m -70
+KPX z afii10099 -70
+KPX z trademark -30
+KPX z y -20
+KPX z Y -20
+KPX z afii10023 -50
+KPX z brokenbar -40
+KPX z section -60
+KPX z afii10071 -50
+KPX z degree -90
+KPX z H -30
+KPX z o -32
+KPX z p -70
+KPX z zero -20
+KPX z u -16
+KPX z v -70
+KPX z t -30
+KPX z guilsinglright -70
+KPX z asterisk -101
+KPX z afii10073 -15
+KPX z afii10080 -20
+KPX z afii10086 -12
+KPX z afii10087 -40
+KPX z afii10084 -30
+KPX z afii10085 -20
+KPX z afii10095 -50
+KPX z B -50
+KPX z w -30
+KPX z afii10089 -60
+
+KPX braceleft z -10
+KPX braceleft bracketright 70
+KPX braceleft slash -31
+KPX braceleft f -20
+KPX braceleft brokenbar -10
+KPX braceleft afii10103 24
+KPX braceleft degree 39
+KPX braceleft afii10069 -10
+KPX braceleft afii10087 -10
+KPX braceleft D -10
+KPX braceleft parenright 42
+
+KPX bar slash -54
+KPX bar degree -35
+
+KPX afii10051 L -45
+KPX afii10051 comma -50
+KPX afii10051 D -40
+KPX afii10051 afii10078 -50
+KPX afii10051 afii10077 -45
+KPX afii10051 afii10086 -30
+KPX afii10051 afii10065 -40
+KPX afii10051 afii10069 -40
+KPX afii10051 afii61352 -40
+KPX afii10051 z -60
+KPX afii10051 f -80
+KPX afii10051 l -45
+KPX afii10051 slash -79
+KPX afii10051 period -50
+
+KPX afii10100 afii10099 -10
+KPX afii10100 m -10
+KPX afii10100 degree -27
+KPX afii10100 w -15
+KPX afii10100 t -15
+KPX afii10100 afii10089 -10
+KPX afii10100 afii10087 -10
+KPX afii10100 mu -15
+KPX afii10100 o -10
+KPX afii10100 v -10
+KPX afii10100 section -10
+KPX afii10100 brokenbar -10
+
+KPX ellipsis m -15
+KPX ellipsis guilsinglright -15
+KPX ellipsis v -15
+KPX ellipsis afii10051 -15
+
+KPX dagger afii10089 -10
+KPX dagger section -10
+KPX dagger degree -27
+KPX dagger w -15
+KPX dagger mu -15
+KPX dagger afii10087 -10
+KPX dagger o -10
+KPX dagger afii10099 -10
+KPX dagger m -10
+KPX dagger brokenbar -10
+KPX dagger v -10
+KPX dagger t -15
+
+KPX perthousand brokenbar -40
+KPX perthousand degree -90
+KPX perthousand o -32
+KPX perthousand t -30
+KPX perthousand afii10073 -15
+KPX perthousand section -60
+KPX perthousand afii10085 -20
+KPX perthousand afii10095 -50
+KPX perthousand afii10087 -40
+KPX perthousand afii10086 -12
+KPX perthousand afii10084 -30
+KPX perthousand afii10089 -60
+KPX perthousand afii10080 -20
+KPX perthousand w -30
+KPX perthousand v -70
+KPX perthousand u -16
+KPX perthousand p -70
+KPX perthousand trademark -30
+KPX perthousand afii10099 -70
+KPX perthousand m -70
+
+KPX afii10058 guilsinglright -30
+KPX afii10058 m -30
+KPX afii10058 afii10087 -20
+KPX afii10058 section -20
+KPX afii10058 afii10051 -30
+KPX afii10058 afii10099 -30
+KPX afii10058 v -30
+KPX afii10058 brokenbar -20
+KPX afii10058 afii10089 -20
+
+KPX afii10059 afii10065 -30
+KPX afii10059 afii10069 -30
+KPX afii10059 afii10077 -20
+KPX afii10059 afii10078 -20
+KPX afii10059 z -55
+KPX afii10059 period -47
+KPX afii10059 slash -78
+KPX afii10059 f -60
+KPX afii10059 s -55
+KPX afii10059 a -30
+KPX afii10059 comma -47
+KPX afii10059 perthousand -55
+
+KPX afii10061 afii10077 -40
+KPX afii10061 afii10065 -40
+KPX afii10061 afii10069 -50
+KPX afii10061 D -50
+KPX afii10061 afii10078 -40
+KPX afii10061 afii10086 -35
+KPX afii10061 L -40
+KPX afii10061 comma -70
+KPX afii10061 l -40
+KPX afii10061 slash -67
+KPX afii10061 period -39
+KPX afii10061 f -78
+KPX afii10061 z -59
+KPX afii10061 afii10101 -16
+KPX afii10061 afii61352 -40
+
+KPX afii10145 period -24
+KPX afii10145 afii10069 -20
+KPX afii10145 slash -55
+KPX afii10145 D -20
+KPX afii10145 comma -30
+KPX afii10145 z -20
+KPX afii10145 f -40
+
+KPX afii10099 period -50
+KPX afii10099 a -40
+KPX afii10099 s -60
+KPX afii10099 f -80
+KPX afii10099 z -60
+KPX afii10099 afii10069 -40
+KPX afii10099 afii10065 -40
+KPX afii10099 afii10086 -30
+KPX afii10099 afii10077 -45
+KPX afii10099 perthousand -60
+KPX afii10099 comma -50
+KPX afii10099 slash -79
+KPX afii10099 afii10078 -50
+
+KPX trademark perthousand -40
+KPX trademark dagger -30
+KPX trademark comma -50
+KPX trademark afii10065 -30
+KPX trademark afii10069 -20
+KPX trademark afii10082 -10
+KPX trademark afii10080 -10
+KPX trademark afii10078 -30
+KPX trademark afii10077 -30
+KPX trademark afii10086 -25
+KPX trademark z -40
+KPX trademark afii10101 -10
+KPX trademark slash -75
+KPX trademark period -50
+KPX trademark S -40
+KPX trademark a -30
+KPX trademark o -10
+KPX trademark f -59
+KPX trademark s -40
+KPX trademark A -30
+KPX trademark zero -10
+
+KPX afii10106 afii10084 -30
+KPX afii10106 braceleft -20
+KPX afii10106 o -32
+KPX afii10106 afii10073 -15
+KPX afii10106 p -70
+KPX afii10106 B -50
+KPX afii10106 afii10080 -20
+KPX afii10106 H -30
+KPX afii10106 t -30
+KPX afii10106 v -70
+KPX afii10106 u -16
+KPX afii10106 Y -20
+KPX afii10106 m -70
+KPX afii10106 afii10051 -70
+KPX afii10106 section -60
+KPX afii10106 afii10087 -40
+KPX afii10106 afii10086 -12
+KPX afii10106 afii10089 -60
+KPX afii10106 trademark -30
+KPX afii10106 afii10023 -50
+KPX afii10106 brokenbar -40
+KPX afii10106 y -20
+KPX afii10106 afii10071 -50
+KPX afii10106 w -30
+KPX afii10106 afii10099 -70
+KPX afii10106 guilsinglright -70
+KPX afii10106 afii10085 -20
+KPX afii10106 afii10095 -50
+KPX afii10106 degree -90
+KPX afii10106 zero -20
+
+KPX guilsinglright period -50
+KPX guilsinglright afii10069 -40
+KPX guilsinglright afii10065 -40
+KPX guilsinglright afii10086 -30
+KPX guilsinglright afii10078 -50
+KPX guilsinglright afii10077 -45
+KPX guilsinglright D -40
+KPX guilsinglright l -45
+KPX guilsinglright comma -50
+KPX guilsinglright L -45
+KPX guilsinglright slash -79
+KPX guilsinglright f -80
+KPX guilsinglright z -60
+KPX guilsinglright afii61352 -40
+
+KPX afii10107 s -40
+KPX afii10107 l -25
+KPX afii10107 z -40
+KPX afii10107 L -25
+KPX afii10107 afii10065 -20
+KPX afii10107 afii10069 -30
+KPX afii10107 afii10077 -25
+KPX afii10107 afii10078 -20
+KPX afii10107 A -20
+KPX afii10107 D -30
+KPX afii10107 dagger -20
+KPX afii10107 perthousand -40
+KPX afii10107 slash -50
+KPX afii10107 S -40
+KPX afii10107 a -20
+KPX afii10107 f -45
+KPX afii10107 afii61352 -20
+
+KPX afii10109 z -59
+KPX afii10109 f -78
+KPX afii10109 slash -70
+KPX afii10109 period -50
+KPX afii10109 l -40
+KPX afii10109 comma -50
+KPX afii10109 afii10086 -35
+KPX afii10109 afii10077 -40
+KPX afii10109 D -50
+KPX afii10109 afii10069 -50
+KPX afii10109 afii61352 -40
+KPX afii10109 afii10101 -16
+KPX afii10109 L -40
+KPX afii10109 afii10078 -40
+KPX afii10109 afii10065 -40
+
+KPX afii10193 z -27
+KPX afii10193 degree -35
+KPX afii10193 l -15
+KPX afii10193 afii10077 -15
+KPX afii10193 afii10078 -15
+KPX afii10193 afii10089 -10
+KPX afii10193 m -20
+KPX afii10193 afii10099 -20
+KPX afii10193 v -20
+KPX afii10193 section -10
+KPX afii10193 brokenbar -10
+KPX afii10193 f -31
+KPX afii10193 afii10087 -10
+KPX afii10193 L -15
+KPX afii10193 slash -54
+
+KPX afii10062 afii10078 -40
+KPX afii10062 afii10077 -40
+KPX afii10062 dagger -40
+KPX afii10062 S -59
+KPX afii10062 z -59
+KPX afii10062 A -40
+KPX afii10062 s -59
+KPX afii10062 f -78
+KPX afii10062 a -40
+KPX afii10062 period -39
+KPX afii10062 slash -67
+KPX afii10062 afii10101 -16
+KPX afii10062 afii61352 -40
+KPX afii10062 comma -70
+KPX afii10062 perthousand -59
+KPX afii10062 D -50
+KPX afii10062 afii10086 -35
+KPX afii10062 afii10069 -50
+KPX afii10062 l -40
+KPX afii10062 L -40
+KPX afii10062 afii10065 -40
+
+KPX afii10110 afii10078 -40
+KPX afii10110 comma -50
+KPX afii10110 L -40
+KPX afii10110 dagger -40
+KPX afii10110 D -50
+KPX afii10110 afii10086 -35
+KPX afii10110 afii10101 -16
+KPX afii10110 f -78
+KPX afii10110 a -40
+KPX afii10110 slash -70
+KPX afii10110 afii10065 -40
+KPX afii10110 afii10069 -50
+KPX afii10110 A -40
+KPX afii10110 afii61352 -40
+KPX afii10110 S -59
+KPX afii10110 s -59
+KPX afii10110 period -50
+KPX afii10110 z -59
+KPX afii10110 perthousand -59
+KPX afii10110 afii10077 -40
+KPX afii10110 l -40
+
+KPX brokenbar a -20
+KPX brokenbar perthousand -40
+KPX brokenbar comma -50
+KPX brokenbar afii10080 -15
+KPX brokenbar afii10086 -31
+KPX brokenbar afii10069 -24
+KPX brokenbar afii10101 -15
+KPX brokenbar z -40
+KPX brokenbar S -40
+KPX brokenbar o -10
+KPX brokenbar zero -15
+KPX brokenbar s -40
+KPX brokenbar period -50
+KPX brokenbar afii10077 -35
+KPX brokenbar afii10078 -40
+KPX brokenbar afii10065 -20
+
+KPX copyright s -10
+KPX copyright f -16
+KPX copyright S -10
+KPX copyright perthousand -10
+KPX copyright z -10
+
+KPX registered s -10
+KPX registered S -10
+KPX registered z -10
+KPX registered perthousand -10
+
+KPX degree dagger -62
+KPX degree t 19
+KPX degree L -50
+KPX degree afii10193 -35
+KPX degree afii10106 -82
+KPX degree perthousand -82
+KPX degree n -35
+KPX degree afii10110 -51
+KPX degree l -50
+KPX degree D -62
+KPX degree A -62
+KPX degree afii10086 -51
+KPX degree afii10077 -50
+KPX degree afii10078 -50
+KPX degree afii10069 -62
+KPX degree afii10065 -62
+KPX degree afii10101 -55
+KPX degree afii10098 -62
+KPX degree afii61352 -62
+KPX degree afii10103 35
+KPX degree afii10109 -51
+KPX degree afii10100 -62
+KPX degree z -82
+KPX degree bar -35
+KPX degree u -51
+KPX degree s -82
+KPX degree o -35
+KPX degree f -94
+KPX degree a -62
+KPX degree S -82
+
+KPX afii10103 degree 35
+
+KPX afii10098 guilsinglright -10
+KPX afii10098 afii10087 -10
+KPX afii10098 afii10089 -10
+KPX afii10098 brokenbar -10
+KPX afii10098 m -10
+KPX afii10098 afii10051 -10
+KPX afii10098 afii10099 -10
+KPX afii10098 o -10
+KPX afii10098 t -15
+KPX afii10098 v -10
+KPX afii10098 w -15
+KPX afii10098 H -15
+KPX afii10098 mu -15
+KPX afii10098 degree -27
+KPX afii10098 section -10
+
+KPX mu f -71
+KPX mu a -40
+KPX mu slash -70
+KPX mu period -50
+KPX mu afii61352 -40
+KPX mu A -40
+KPX mu D -50
+KPX mu afii10078 -40
+KPX mu afii10077 -40
+KPX mu afii10065 -40
+KPX mu afii10069 -50
+KPX mu L -40
+KPX mu comma -50
+KPX mu l -40
+KPX mu dagger -40
+
+KPX afii10071 afii10080 -10
+KPX afii10071 w -10
+KPX afii10071 t -10
+KPX afii10071 o -15
+KPX afii10071 afii10087 -15
+KPX afii10071 brokenbar -15
+
+KPX afii61352 w -15
+KPX afii61352 t -15
+KPX afii61352 v -10
+KPX afii61352 o -10
+KPX afii61352 mu -15
+KPX afii61352 H -15
+KPX afii61352 degree -27
+KPX afii61352 m -10
+KPX afii61352 afii10051 -10
+KPX afii61352 afii10087 -10
+KPX afii61352 afii10089 -10
+KPX afii61352 guilsinglright -10
+
+KPX afii10101 zero -10
+KPX afii10101 S -10
+KPX afii10101 afii10080 -10
+KPX afii10101 afii10078 -10
+KPX afii10101 L -10
+KPX afii10101 l -10
+KPX afii10101 perthousand -10
+KPX afii10101 s -10
+KPX afii10101 degree -27
+KPX afii10101 z -10
+KPX afii10101 afii10077 -10
+
+KPX afii10054 asterisk -39
+KPX afii10054 guilsinglright -20
+KPX afii10054 afii10089 -15
+KPX afii10054 afii10087 -15
+KPX afii10054 brokenbar -15
+KPX afii10054 section -15
+KPX afii10054 afii10099 -20
+KPX afii10054 afii10051 -20
+KPX afii10054 m -20
+KPX afii10054 v -20
+
+KPX afii10102 afii10087 -25
+KPX afii10102 afii10089 -25
+KPX afii10102 asterisk -47
+KPX afii10102 guilsinglright -40
+KPX afii10102 v -40
+KPX afii10102 degree -67
+KPX afii10102 section -25
+KPX afii10102 brokenbar -25
+KPX afii10102 afii10099 -40
+KPX afii10102 m -40
+KPX afii10102 afii10051 -40
+
+KPX afii10018 asterisk -55
+
+KPX afii10019 afii10087 -10
+KPX afii10019 brokenbar -10
+
+KPX afii10020 afii10074 -20
+KPX afii10020 afii10072 -20
+KPX afii10020 afii10073 -40
+KPX afii10020 afii10069 -70
+KPX afii10020 afii10070 -40
+KPX afii10020 afii10067 -30
+KPX afii10020 afii10066 -20
+KPX afii10020 afii10082 -30
+KPX afii10020 afii10083 -30
+KPX afii10020 afii10080 -40
+KPX afii10020 afii10079 -20
+KPX afii10020 afii10077 -50
+KPX afii10020 B -30
+KPX afii10020 h -30
+KPX afii10020 afii10096 -20
+KPX afii10020 afii10095 -30
+KPX afii10020 afii10093 -30
+KPX afii10020 guilsinglright -20
+KPX afii10020 perthousand -60
+KPX afii10020 period -50
+KPX afii10020 slash -97
+KPX afii10020 H -20
+KPX afii10020 a -50
+KPX afii10020 w -20
+KPX afii10020 u -30
+KPX afii10020 v -20
+KPX afii10020 s -60
+KPX afii10020 o -40
+KPX afii10020 i -20
+KPX afii10020 j -20
+KPX afii10020 zero -40
+KPX afii10020 e -40
+KPX afii10020 f -109
+KPX afii10020 afii10051 -20
+KPX afii10020 m -20
+KPX afii10020 z -60
+KPX afii10020 afii10023 -30
+KPX afii10020 afii10102 -30
+KPX afii10020 afii10101 -50
+KPX afii10020 comma -60
+KPX afii10020 afii10065 -50
+KPX afii10020 afii10078 -50
+KPX afii10020 afii10071 -30
+
+KPX afii10021 brokenbar -10
+KPX afii10021 afii10087 -10
+
+KPX afii10022 slash -43
+KPX afii10022 a -15
+KPX afii10022 f -30
+KPX afii10022 z -20
+KPX afii10022 afii61352 -15
+KPX afii10022 afii10065 -15
+KPX afii10022 afii10069 -15
+KPX afii10022 afii10077 -15
+KPX afii10022 afii10078 -15
+KPX afii10022 D -15
+KPX afii10022 dagger -15
+KPX afii10022 perthousand -20
+KPX afii10022 L -15
+KPX afii10022 comma -24
+KPX afii10022 S -20
+KPX afii10022 s -20
+KPX afii10022 l -15
+KPX afii10022 A -15
+
+KPX afii10024 guilsinglright -40
+KPX afii10024 afii10089 -20
+KPX afii10024 afii10095 -15
+KPX afii10024 B -15
+KPX afii10024 m -40
+KPX afii10024 afii10051 -40
+KPX afii10024 afii10099 -40
+KPX afii10024 section -20
+KPX afii10024 afii10023 -15
+KPX afii10024 afii10071 -15
+KPX afii10024 H -15
+KPX afii10024 v -40
+KPX afii10024 w -15
+
+KPX afii10025 afii10099 -15
+KPX afii10025 afii10087 -15
+KPX afii10025 afii10089 -15
+KPX afii10025 guilsinglright -15
+KPX afii10025 v -15
+KPX afii10025 m -15
+KPX afii10025 afii10051 -15
+KPX afii10025 brokenbar -15
+KPX afii10025 section -15
+
+KPX afii10028 afii10051 -30
+KPX afii10028 m -30
+KPX afii10028 trademark -10
+KPX afii10028 afii10099 -30
+KPX afii10028 brokenbar -15
+KPX afii10028 section -30
+KPX afii10028 v -30
+KPX afii10028 guilsinglright -30
+KPX afii10028 afii10089 -30
+KPX afii10028 afii10084 -10
+KPX afii10028 afii10087 -15
+
+KPX afii10032 s -40
+KPX afii10032 f -63
+KPX afii10032 a -20
+KPX afii10032 S -40
+KPX afii10032 slash -74
+KPX afii10032 period -32
+KPX afii10032 afii61352 -20
+KPX afii10032 z -40
+KPX afii10032 D -25
+KPX afii10032 A -20
+KPX afii10032 afii10077 -20
+KPX afii10032 afii10078 -20
+KPX afii10032 afii10069 -25
+KPX afii10032 afii10065 -20
+KPX afii10032 comma -30
+KPX afii10032 L -20
+KPX afii10032 dagger -20
+KPX afii10032 perthousand -40
+KPX afii10032 l -20
+
+KPX afii10034 afii10080 -15
+KPX afii10034 afii10078 -40
+KPX afii10034 afii10077 -40
+KPX afii10034 afii10065 -40
+KPX afii10034 afii10069 -50
+KPX afii10034 comma -60
+KPX afii10034 o -15
+KPX afii10034 zero -15
+KPX afii10034 f -90
+KPX afii10034 a -40
+KPX afii10034 slash -121
+KPX afii10034 period -50
+KPX afii10034 afii10101 -30
+KPX afii10034 z -60
+KPX afii10034 afii10086 -40
+KPX afii10034 perthousand -60
+KPX afii10034 s -60
+
+KPX afii10035 afii61352 -20
+KPX afii10035 z -35
+KPX afii10035 f -65
+KPX afii10035 s -35
+KPX afii10035 S -35
+KPX afii10035 period -31
+KPX afii10035 comma -30
+KPX afii10035 dagger -20
+KPX afii10035 perthousand -35
+KPX afii10035 D -30
+KPX afii10035 afii10077 -20
+KPX afii10035 afii10078 -20
+KPX afii10035 afii10065 -20
+KPX afii10035 slash -70
+KPX afii10035 L -20
+KPX afii10035 A -20
+KPX afii10035 afii10069 -30
+KPX afii10035 l -20
+KPX afii10035 a -20
+
+KPX afii10036 z -50
+KPX afii10036 afii10071 -20
+KPX afii10036 afii10023 -20
+KPX afii10036 H -20
+KPX afii10036 slash -117
+KPX afii10036 period -50
+KPX afii10036 u -30
+KPX afii10036 w -20
+KPX afii10036 s -50
+KPX afii10036 f -60
+KPX afii10036 e -20
+KPX afii10036 zero -35
+KPX afii10036 a -40
+KPX afii10036 comma -60
+KPX afii10036 o -40
+KPX afii10036 afii10073 -28
+KPX afii10036 afii10067 -25
+KPX afii10036 afii10070 -20
+KPX afii10036 afii10065 -40
+KPX afii10036 B -20
+KPX afii10036 h -15
+KPX afii10036 afii10093 -15
+KPX afii10036 afii10095 -20
+KPX afii10036 afii10086 -30
+KPX afii10036 afii10080 -35
+KPX afii10036 afii10083 -20
+KPX afii10036 afii10082 -30
+KPX afii10036 afii10077 -40
+KPX afii10036 afii10101 -40
+KPX afii10036 afii10078 -40
+KPX afii10036 afii10069 -30
+KPX afii10036 afii10087 -20
+KPX afii10036 perthousand -50
+
+KPX afii10037 v -25
+KPX afii10037 afii10051 -25
+KPX afii10037 m -25
+KPX afii10037 afii10087 -20
+KPX afii10037 guilsinglright -25
+KPX afii10037 afii10073 -20
+KPX afii10037 afii10089 -20
+
+KPX afii10038 L -10
+KPX afii10038 perthousand -30
+KPX afii10038 l -10
+KPX afii10038 asterisk -35
+KPX afii10038 afii10069 -20
+KPX afii10038 D -20
+KPX afii10038 afii10077 -10
+KPX afii10038 z -30
+KPX afii10038 s -30
+KPX afii10038 f -59
+KPX afii10038 S -30
+
+KPX afii10039 afii10080 -10
+KPX afii10039 o -10
+KPX afii10039 zero -10
+
+KPX afii10044 asterisk -54
+
+KPX afii10046 asterisk -74
+
+KPX afii10048 L -20
+KPX afii10048 slash -70
+KPX afii10048 period -27
+KPX afii10048 a -20
+KPX afii10048 S -40
+KPX afii10048 z -40
+KPX afii10048 afii10069 -40
+KPX afii10048 afii10065 -20
+KPX afii10048 afii10077 -20
+KPX afii10048 afii10078 -20
+KPX afii10048 A -20
+KPX afii10048 dagger -20
+KPX afii10048 perthousand -40
+KPX afii10048 l -20
+KPX afii10048 s -40
+KPX afii10048 D -40
+KPX afii10048 afii61352 -20
+KPX afii10048 f -55
+KPX afii10048 comma -30
+
+KPX afii10065 o -10
+KPX afii10065 degree -27
+KPX afii10065 afii10089 -10
+KPX afii10065 afii10087 -10
+KPX afii10065 guilsinglright -10
+KPX afii10065 asterisk -31
+KPX afii10065 mu -15
+KPX afii10065 H -15
+KPX afii10065 w -15
+KPX afii10065 v -10
+KPX afii10065 t -15
+KPX afii10065 afii10051 -10
+KPX afii10065 m -10
+KPX afii10065 afii10099 -10
+KPX afii10065 section -10
+KPX afii10065 brokenbar -10
+
+KPX afii10066 brokenbar -12
+KPX afii10066 afii10073 -15
+KPX afii10066 section -10
+KPX afii10066 H -15
+KPX afii10066 zero -15
+KPX afii10066 o -15
+KPX afii10066 t -15
+KPX afii10066 w -15
+KPX afii10066 afii10080 -15
+KPX afii10066 afii10087 -12
+KPX afii10066 afii10089 -10
+
+KPX afii10067 afii10084 -15
+KPX afii10067 t -15
+KPX afii10067 afii10095 -15
+KPX afii10067 afii10051 -30
+KPX afii10067 afii10099 -30
+KPX afii10067 guilsinglright -30
+KPX afii10067 brokenbar -25
+KPX afii10067 trademark -15
+KPX afii10067 section -20
+KPX afii10067 p -40
+KPX afii10067 v -30
+KPX afii10067 w -15
+KPX afii10067 o -15
+KPX afii10067 zero -15
+KPX afii10067 mu -10
+KPX afii10067 H -15
+KPX afii10067 afii10071 -15
+KPX afii10067 afii10023 -15
+KPX afii10067 m -30
+KPX afii10067 afii10089 -20
+KPX afii10067 afii10087 -25
+KPX afii10067 afii10080 -15
+KPX afii10067 B -15
+KPX afii10067 afii10073 -20
+KPX afii10067 asterisk -27
+
+KPX afii10068 dagger -40
+KPX afii10068 afii61352 -40
+KPX afii10068 afii10086 -15
+KPX afii10068 afii10077 -40
+KPX afii10068 comma -50
+KPX afii10068 A -40
+KPX afii10068 o -15
+KPX afii10068 s -40
+KPX afii10068 zero -15
+KPX afii10068 r -10
+KPX afii10068 perthousand -40
+KPX afii10068 ellipsis -15
+KPX afii10068 l -40
+KPX afii10068 L -40
+KPX afii10068 afii10082 -10
+KPX afii10068 afii10080 -15
+KPX afii10068 afii10078 -40
+KPX afii10068 D -40
+KPX afii10068 afii10069 -40
+KPX afii10068 afii10065 -40
+KPX afii10068 registered -10
+KPX afii10068 afii10101 -15
+KPX afii10068 z -40
+KPX afii10068 a -40
+KPX afii10068 S -40
+KPX afii10068 x -15
+KPX afii10068 f -80
+KPX afii10068 period -50
+KPX afii10068 slash -82
+KPX afii10068 R -10
+
+KPX afii10069 afii10087 -11
+KPX afii10069 afii10089 -25
+KPX afii10069 B -10
+KPX afii10069 afii10095 -10
+KPX afii10069 asterisk -55
+KPX afii10069 guilsinglright -25
+KPX afii10069 t -10
+KPX afii10069 v -25
+KPX afii10069 H -10
+KPX afii10069 degree -27
+KPX afii10069 afii10071 -10
+KPX afii10069 afii10023 -10
+KPX afii10069 section -25
+KPX afii10069 brokenbar -11
+KPX afii10069 m -25
+KPX afii10069 afii10051 -25
+KPX afii10069 w -10
+KPX afii10069 afii10099 -25
+
+KPX afii10070 z -10
+KPX afii10070 S -10
+KPX afii10070 s -10
+KPX afii10070 perthousand -10
+
+KPX afii10077 H -10
+KPX afii10077 afii10051 -20
+KPX afii10077 w -10
+KPX afii10077 t -10
+KPX afii10077 afii10099 -20
+KPX afii10077 brokenbar -16
+KPX afii10077 degree -27
+KPX afii10077 m -20
+KPX afii10077 v -20
+KPX afii10077 asterisk -35
+KPX afii10077 guilsinglright -20
+KPX afii10077 afii10089 -16
+KPX afii10077 section -16
+KPX afii10077 afii10087 -16
+KPX afii10077 afii10073 -10
+
+KPX afii10078 section -16
+KPX afii10078 afii10099 -20
+KPX afii10078 t -10
+KPX afii10078 w -10
+KPX afii10078 v -20
+KPX afii10078 mu -15
+KPX afii10078 H -10
+KPX afii10078 afii10023 -10
+KPX afii10078 brokenbar -20
+KPX afii10078 degree -27
+KPX afii10078 afii10071 -10
+KPX afii10078 m -20
+KPX afii10078 afii10051 -20
+KPX afii10078 afii10087 -20
+KPX afii10078 afii10089 -16
+KPX afii10078 afii10095 -10
+KPX afii10078 B -10
+KPX afii10078 asterisk -35
+KPX afii10078 guilsinglright -20
+KPX afii10078 afii10073 -10
+
+KPX afii10080 z -20
+KPX afii10080 afii10065 -10
+KPX afii10080 afii10078 -10
+KPX afii10080 s -20
+KPX afii10080 afii61352 -10
+KPX afii10080 afii10051 -10
+KPX afii10080 dagger -10
+KPX afii10080 afii10077 -15
+KPX afii10080 afii10069 -10
+KPX afii10080 D -10
+KPX afii10080 A -10
+KPX afii10080 afii10087 -20
+KPX afii10080 L -15
+KPX afii10080 perthousand -20
+KPX afii10080 guilsinglright -10
+KPX afii10080 l -15
+KPX afii10080 slash -43
+KPX afii10080 v -10
+KPX afii10080 f -31
+KPX afii10080 a -10
+KPX afii10080 S -20
+KPX afii10080 afii10099 -10
+KPX afii10080 m -10
+KPX afii10080 brokenbar -20
+
+KPX afii10082 perthousand -10
+KPX afii10082 s -10
+KPX afii10082 S -10
+KPX afii10082 z -10
+
+KPX afii10083 s -10
+KPX afii10083 perthousand -10
+KPX afii10083 z -10
+KPX afii10083 f -16
+KPX afii10083 S -10
+
+KPX afii10084 r -10
+KPX afii10084 D -20
+KPX afii10084 A -30
+KPX afii10084 afii10086 -25
+KPX afii10084 afii10077 -30
+KPX afii10084 afii10078 -30
+KPX afii10084 afii10065 -30
+KPX afii10084 L -30
+KPX afii10084 dagger -30
+KPX afii10084 perthousand -40
+KPX afii10084 s -40
+KPX afii10084 o -10
+KPX afii10084 a -30
+KPX afii10084 S -40
+KPX afii10084 R -10
+KPX afii10084 period -50
+KPX afii10084 afii10101 -10
+KPX afii10084 afii61352 -30
+KPX afii10084 registered -10
+KPX afii10084 z -40
+KPX afii10084 afii10080 -10
+KPX afii10084 afii10069 -20
+KPX afii10084 comma -50
+KPX afii10084 f -59
+KPX afii10084 zero -10
+KPX afii10084 slash -75
+KPX afii10084 l -30
+KPX afii10084 afii10082 -10
+
+KPX afii10085 afii10103 24
+KPX afii10085 degree 39
+KPX afii10085 brokenbar -10
+KPX afii10085 z -10
+KPX afii10085 s -10
+KPX afii10085 f -20
+KPX afii10085 bracketright 70
+KPX afii10085 S -10
+KPX afii10085 slash -31
+KPX afii10085 parenright 42
+KPX afii10085 perthousand -10
+KPX afii10085 D -10
+KPX afii10085 afii10087 -10
+KPX afii10085 afii10069 -10
+
+KPX afii10086 afii10087 -20
+KPX afii10086 brokenbar -20
+KPX afii10086 degree -51
+KPX afii10086 m -30
+KPX afii10086 afii10051 -30
+KPX afii10086 afii10089 -20
+KPX afii10086 asterisk -54
+KPX afii10086 guilsinglright -30
+KPX afii10086 section -20
+KPX afii10086 afii10099 -30
+KPX afii10086 v -30
+
+KPX afii10087 comma -50
+KPX afii10087 perthousand -40
+KPX afii10087 D -24
+KPX afii10087 afii10080 -15
+KPX afii10087 afii10077 -35
+KPX afii10087 afii10078 -40
+KPX afii10087 afii10086 -31
+KPX afii10087 afii10069 -24
+KPX afii10087 afii10101 -15
+KPX afii10087 afii61352 -20
+KPX afii10087 o -10
+KPX afii10087 s -40
+KPX afii10087 a -20
+KPX afii10087 L -35
+KPX afii10087 A -20
+KPX afii10087 afii10065 -20
+KPX afii10087 l -35
+KPX afii10087 dagger -20
+KPX afii10087 z -40
+KPX afii10087 period -50
+KPX afii10087 S -40
+KPX afii10087 zero -15
+
+KPX afii10088 afii10095 -15
+KPX afii10088 afii10084 -10
+KPX afii10088 guilsinglright -15
+KPX afii10088 o -10
+KPX afii10088 section -15
+KPX afii10088 afii10071 -15
+KPX afii10088 trademark -10
+KPX afii10088 m -15
+KPX afii10088 afii10051 -15
+KPX afii10088 afii10099 -15
+KPX afii10088 afii10089 -15
+KPX afii10088 B -15
+KPX afii10088 v -15
+KPX afii10088 afii10023 -15
+
+KPX afii10094 degree -54
+KPX afii10094 p -50
+KPX afii10094 w -15
+KPX afii10094 section -35
+KPX afii10094 afii10073 -15
+KPX afii10094 afii10095 -20
+KPX afii10094 B -20
+KPX afii10094 afii10051 -50
+KPX afii10094 asterisk -82
+KPX afii10094 afii10084 -10
+KPX afii10094 afii10080 -15
+KPX afii10094 guilsinglright -50
+KPX afii10094 afii10087 -20
+KPX afii10094 afii10089 -35
+KPX afii10094 afii10023 -20
+KPX afii10094 brokenbar -20
+KPX afii10094 afii10071 -20
+KPX afii10094 trademark -10
+KPX afii10094 m -50
+KPX afii10094 afii10099 -50
+KPX afii10094 zero -15
+KPX afii10094 o -20
+KPX afii10094 t -15
+KPX afii10094 v -50
+KPX afii10094 u -10
+KPX afii10094 H -15
+
+KPX afii10095 afii10087 -15
+KPX afii10095 o -15
+KPX afii10095 brokenbar -15
+KPX afii10095 afii10080 -10
+KPX afii10095 w -10
+KPX afii10095 t -10
+KPX afii10095 zero -10
+KPX afii10095 H -10
+
+KPX afii10096 m -10
+KPX afii10096 afii10051 -10
+KPX afii10096 guilsinglright -10
+KPX afii10096 afii10099 -10
+KPX afii10096 z -31
+KPX afii10096 S -31
+KPX afii10096 v -10
+KPX afii10096 perthousand -31
+KPX afii10096 f -39
+KPX afii10096 s -31
+
+EndKernPairs
+EndKernData
+EndFontMetrics

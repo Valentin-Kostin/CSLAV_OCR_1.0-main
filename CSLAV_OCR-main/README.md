@@ -59,7 +59,7 @@ Pillow>=9.0.0
 
 ### 🖥️ Графический интерфейс (рекомендуется)
 ```bash
-python gui_app.py
+python CSLAV_OCR-main/gui_app.py
 ```
 
 **Возможности GUI:**

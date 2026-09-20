@@ -1,0 +1,22 @@
+FontName (Slavjanic-Ucs)
+FullName (Slavjanic Ucs)
+AppleName (Slavjanic-Ucs)
+FamilyName (Slavjanic Ucs)
+Version (2003.020)
+isFixedPitch false
+CharacterSet (cyrillicreg.cs)
+Encoding (cyrillic.enc)
+Pi true
+ItalicAngle 0
+CapHeight 636
+UnderlinePosition -91
+UnderlineThickness 0
+StemWidth 82
+Serif false
+MSMenuName (Slavjanic Ucs)
+VPMenuName (Slavjanic Ucs)
+WORDMenuName (Slavjanic Ucs)
+VPStyle (N)
+WindowsCharSet 204
+WindowsFirstChar 32
+WindowsLastChar 255

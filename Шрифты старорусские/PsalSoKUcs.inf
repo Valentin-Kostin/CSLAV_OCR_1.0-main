@@ -1,0 +1,22 @@
+FontName (Psaltyr-kUcs-SpacedOut)
+FullName (Psaltyr kUcs SpacedOut)
+AppleName (Psaltyr-kUcs-SpacedOut)
+FamilyName (Psaltyr kUcs)
+Version (002.001)
+isFixedPitch false
+CharacterSet (cyrillicit.cs)
+Encoding (cyrillic.enc)
+Pi true
+ItalicAngle 0
+CapHeight 800
+UnderlinePosition -150
+UnderlineThickness 50
+StemWidth 64
+Serif false
+MSMenuName (Psaltyr kUcs)
+VPMenuName (Psaltyr kUcs)
+WORDMenuName (Psaltyr kUcs)
+VPStyle (I)
+WindowsCharSet 204
+WindowsFirstChar 32
+WindowsLastChar 255
