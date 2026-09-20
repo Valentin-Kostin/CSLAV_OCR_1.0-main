@@ -405,19 +405,28 @@ def symbols_to_rows(symbols_list, edges, filename=None, save_interim_results=Fal
         final_rows: список строк (списков символов), отсортированных сверху вниз
     """
     symbols_list.sort(key=lambda symbol: symbol.coordinates[1], reverse=True)
-    rows = []
-    for i in range(len(edges)):
-        rows.append([])
+    
+    # Создаем строки по количеству edges
+    rows = [[] for _ in range(len(edges))]
+    
+    if len(edges) == 0:
+        # Если нет строк, возвращаем пустой список
+        return []
     
     i = 0
     for symbol in symbols_list:
-        if i < len(edges) - 1:
+        # Проверяем, не вышли ли за границы
+        while i < len(edges) - 1:
             if symbol.coordinates[1] > edges[-i - 2]:
-                rows[i].append(symbol)
-            else:
-                i += 1
-        else:
+                break
+            i += 1
+        
+        # Добавляем символ в текущую строку, проверяя границы
+        if i < len(rows):
             rows[i].append(symbol)
+        else:
+            # Если индекс вышел за границы, добавляем в последнюю строку
+            rows[-1].append(symbol)
     
     rows.reverse()
     
@@ -445,9 +454,16 @@ def symbols_to_rows(symbols_list, edges, filename=None, save_interim_results=Fal
     
     # Визуализация если требуется
     if save_interim_results and filename:
-        img_for_rows = cv2.imread(filename)
-        for row in final_rows:
-            x1, y1, x2, y2 = img_for_rows.shape[1], img_for_rows.shape[0], 0, 0
+        try:
+            img_array = numpy.fromfile(filename, dtype=numpy.uint8)
+            img_for_rows = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        except Exception as e:
+            logger.error(f"Ошибка чтения изображения для визуализации {filename}: {e}")
+            img_for_rows = None
+        
+        if img_for_rows is not None:
+            for row in final_rows:
+                x1, y1, x2, y2 = img_for_rows.shape[1], img_for_rows.shape[0], 0, 0
             for symbol in row:
                 if symbol.coordinates[0] < x1:
                     x1 = symbol.coordinates[0]

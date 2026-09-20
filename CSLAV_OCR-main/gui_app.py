@@ -14,6 +14,8 @@ from tensorflow.keras import models
 import cv2
 import numpy as np
 import pymupdf  # PyMuPDF (используем новый API)
+import tempfile
+import shutil
 
 # Импорт утилит и логгера
 from ocr_utils import (
@@ -41,6 +43,8 @@ class CSLAVOCRApp:
         self.is_processing = False
         self.current_image = None  # Для отображения изображения
         self.photo_image = None  # Ссылка на PhotoImage
+        self.rotated_temp_dir = None  # Временная папка для повёрнутых изображений
+        self.rotation_angle = tk.DoubleVar(value=0.0)  # Угол поворота в градусах
         
         # Пути по умолчанию
         self.default_model_path = os.path.join(os.path.dirname(__file__), 'machine.h5')
@@ -148,6 +152,18 @@ class CSLAVOCRApp:
         self.cancel_button.pack(side=tk.LEFT, padx=2)
         
         ttk.Button(control_frame, text="🗑 Очистить", command=self._clear_all).pack(side=tk.LEFT, padx=2)
+        
+        # Панель поворота изображения
+        rotate_frame = ttk.LabelFrame(top_frame, text="Поворот изображения", padding="5")
+        rotate_frame.pack(side=tk.RIGHT, fill=tk.X, padx=5)
+        
+        ttk.Label(rotate_frame, text="Угол (°):").pack(side=tk.LEFT, padx=2)
+        ttk.Spinbox(rotate_frame, from_=-360, to=360, increment=0.1, textvariable=self.rotation_angle, width=6, command=self._apply_rotation).pack(side=tk.LEFT, padx=2)
+        
+        ttk.Button(rotate_frame, text="↻ Применить", command=self._apply_rotation).pack(side=tk.LEFT, padx=2)
+        ttk.Button(rotate_frame, text="⟲ 90°", command=lambda: self._rotate_by_90(90)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(rotate_frame, text="⟳ -90°", command=lambda: self._rotate_by_90(-90)).pack(side=tk.LEFT, padx=2)
+        ttk.Button(rotate_frame, text="✕ Сброс", command=self._reset_rotation).pack(side=tk.LEFT, padx=2)
     
     def _create_main_area(self):
         """Создание основной области с изображением слева и текстом справа."""
@@ -249,6 +265,11 @@ class CSLAVOCRApp:
     
     def _select_image(self):
         """Выбор изображения для распознавания."""
+        # Очистка предыдущих временных файлов и сброс пути к оригиналу
+        self._cleanup_temp_dir()
+        if hasattr(self, 'original_file_path'):
+            self.original_file_path = None
+        
         filename = filedialog.askopenfilename(
             title="Выберите изображение",
             filetypes=[
@@ -259,6 +280,7 @@ class CSLAVOCRApp:
         if filename:
             self.selected_file = filename
             self.file_type = 'image'
+            self.rotation_angle.set(0.0)  # Сброс угла поворота
             self.file_label.config(text=os.path.basename(filename), foreground="black")
             self.status_var.set(f"Выбран файл: {os.path.basename(filename)}")
             self._display_image(filename)
@@ -315,6 +337,11 @@ class CSLAVOCRApp:
     
     def _select_pdf(self):
         """Выбор PDF файла для распознавания."""
+        # Очистка предыдущих временных файлов и сброс пути к оригиналу
+        self._cleanup_temp_dir()
+        if hasattr(self, 'original_file_path'):
+            self.original_file_path = None
+        
         filename = filedialog.askopenfilename(
             title="Выберите PDF файл",
             filetypes=[
@@ -325,6 +352,7 @@ class CSLAVOCRApp:
         if filename:
             self.selected_file = filename
             self.file_type = 'pdf'
+            self.rotation_angle.set(0.0)  # Сброс угла поворота (для PDF не применяется)
             self.file_label.config(text=os.path.basename(filename), foreground="black")
             self.status_var.set(f"Выбран PDF: {os.path.basename(filename)}")
     
@@ -531,7 +559,103 @@ class CSLAVOCRApp:
         self.selected_file = None
         self.file_type = None
         self.file_label.config(text="Не выбран", foreground="gray")
+        self.rotation_angle.set(0.0)
+        # Очистка временной папки
+        self._cleanup_temp_dir()
         self.status_var.set("Все очищено")
+    
+    def _cleanup_temp_dir(self):
+        """Очистка временной папки с повёрнутыми изображениями."""
+        if self.rotated_temp_dir and os.path.exists(self.rotated_temp_dir):
+            try:
+                shutil.rmtree(self.rotated_temp_dir)
+                self.rotated_temp_dir = None
+                logger.debug("Временная папка очищена")
+            except Exception as e:
+                logger.error(f"Ошибка при очистке временной папки: {e}")
+    
+    def _rotate_by_90(self, degrees):
+        """Поворот на 90 градусов (быстрая кнопка)."""
+        current = self.rotation_angle.get()
+        new_angle = current + degrees
+        # Нормализация угла
+        while new_angle >= 360:
+            new_angle -= 360
+        while new_angle < 0:
+            new_angle += 360
+        self.rotation_angle.set(new_angle)
+        self._apply_rotation()
+    
+    def _reset_rotation(self):
+        """Сброс поворота к исходному изображению."""
+        self.rotation_angle.set(0.0)
+        if self.rotated_temp_dir:
+            self._cleanup_temp_dir()
+        # Восстановление оригинального файла если он был
+        if hasattr(self, 'original_file_path') and self.original_file_path:
+            self.selected_file = self.original_file_path
+            self._display_image(self.selected_file)
+            logger.info("Поворот сброшен, восстановлено оригинальное изображение")
+        else:
+            logger.warning("Оригинальный файл не найден для сброса поворота")
+    
+    def _apply_rotation(self):
+        """Применение поворота к изображению."""
+        if not self.selected_file or not self.file_type == 'image':
+            messagebox.showwarning("Предупреждение", "Сначала выберите изображение для поворота")
+            return
+        
+        angle = self.rotation_angle.get()
+        
+        # Если угол 0 - сбрасываем к оригиналу
+        if abs(angle) < 0.01:
+            self._reset_rotation()
+            return
+        
+        try:
+            # Чтение текущего изображения
+            img_array = np.fromfile(self.selected_file, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                raise ValueError("Не удалось декодировать изображение")
+            
+            # Поворот изображения
+            h, w = img.shape[:2]
+            center = (w / 2, h / 2)
+            rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
+            rotated = cv2.warpAffine(img, rotation_matrix, (w, h), borderMode=cv2.BORDER_REPLICATE)
+            
+            # Создание временной папки если ещё не создана
+            if self.rotated_temp_dir is None:
+                self.rotated_temp_dir = tempfile.mkdtemp(prefix="cslav_rotated_")
+                logger.debug(f"Создана временная папка: {self.rotated_temp_dir}")
+            
+            # Сохранение повёрнутого изображения во временный файл
+            temp_filename = os.path.join(self.rotated_temp_dir, "rotated_image.png")
+            success = cv2.imencode('.png', rotated)
+            if success is None:
+                raise ValueError("Не удалось закодировать повёрнутое изображение")
+            
+            # Запись через numpy для поддержки кириллических путей
+            with open(temp_filename, 'wb') as f:
+                f.write(success.tobytes())
+            
+            # Сохранение пути к оригиналу для возможности сброса
+            if not hasattr(self, 'original_file_path') or self.original_file_path is None:
+                self.original_file_path = self.selected_file
+            
+            # Обновление текущего файла
+            self.selected_file = temp_filename
+            logger.info(f"Изображение повёрнуто на {angle}°, сохранено во временный файл")
+            
+            # Отображение повёрнутого изображения
+            self._display_image(temp_filename)
+            self.status_var.set(f"Изображение повёрнуто на {angle}°")
+            
+        except Exception as e:
+            logger.error(f"Ошибка при повороте изображения: {e}")
+            messagebox.showerror("Ошибка", f"Не удалось повернуть изображение:\n{e}")
     
     def _save_result(self):
         """Сохранение результата в файл."""
