@@ -222,12 +222,55 @@ class CSLAVOCRApp:
         self.image_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
         self.image_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         
+        # Панель визуализации bounding boxes
+        viz_frame = ttk.LabelFrame(left_frame, text="Визуализация", padding="3")
+        viz_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=(5, 0))
+        
+        self.show_boxes_var = tk.BooleanVar(value=False)
+        self.show_chars_var = tk.BooleanVar(value=False)
+        
+        ttk.Checkbutton(viz_frame, text="Показать рамки", variable=self.show_boxes_var, 
+                       command=self._toggle_visualization).pack(side=tk.LEFT, padx=2)
+        ttk.Checkbutton(viz_frame, text="Показать символы", variable=self.show_chars_var,
+                       command=self._toggle_visualization).pack(side=tk.LEFT, padx=2)
+        ttk.Button(viz_frame, text="Обновить", command=self._refresh_visualization, width=8).pack(side=tk.LEFT, padx=2)
+        
         # Правая панель - распознанный текст
         right_frame = ttk.LabelFrame(main_area, text="Распознанный текст", padding="5")
         main_area.add(right_frame, weight=1)
         
         self.result_text = scrolledtext.ScrolledText(right_frame, wrap=tk.WORD, font=("Consolas", 11))
         self.result_text.pack(fill=tk.BOTH, expand=True)
+        
+        # Панель сравнения с эталоном
+        compare_frame = ttk.LabelFrame(right_frame, text="Сравнение с эталоном", padding="5")
+        compare_frame.pack(fill=tk.X, pady=(5, 0))
+        
+        ttk.Label(compare_frame, text="Эталонный текст:").pack(side=tk.LEFT, padx=2)
+        self.etalon_text = scrolledtext.ScrolledText(compare_frame, height=4, font=("Consolas", 10))
+        self.etalon_text.pack(fill=tk.BOTH, expand=True, pady=(2, 0))
+        
+        compare_btn_frame = ttk.Frame(compare_frame)
+        compare_btn_frame.pack(fill=tk.X, pady=(2, 0))
+        
+        ttk.Button(compare_btn_frame, text="Загрузить эталон", command=self._load_etalon).pack(side=tk.LEFT, padx=2)
+        ttk.Button(compare_btn_frame, text="Сравнить", command=self._compare_with_etalon).pack(side=tk.LEFT, padx=2)
+        self.compare_result_label = ttk.Label(compare_btn_frame, text="", foreground="blue")
+        self.compare_result_label.pack(side=tk.LEFT, padx=10)
+        
+        # Панель генерации обучающих данных
+        train_frame = ttk.LabelFrame(right_frame, text="Обучающие данные", padding="5")
+        train_frame.pack(fill=tk.X, pady=(5, 0))
+        
+        ttk.Label(train_frame, text="Класс:").pack(side=tk.LEFT, padx=2)
+        self.symbol_class_var = tk.StringVar(value="?")
+        self.symbol_class_entry = ttk.Entry(train_frame, textvariable=self.symbol_class_var, width=5)
+        self.symbol_class_entry.pack(side=tk.LEFT, padx=2)
+        
+        ttk.Button(train_frame, text="Экспорт символа", command=self._export_symbol_data).pack(side=tk.LEFT, padx=2)
+        ttk.Button(train_frame, text="Экспорт всех", command=self._export_all_training_data).pack(side=tk.LEFT, padx=2)
+        self.training_status_label = ttk.Label(train_frame, text="", foreground="green")
+        self.training_status_label.pack(side=tk.LEFT, padx=10)
         
         # Кнопки действий с результатом
         result_btn_frame = ttk.Frame(right_frame)
@@ -477,8 +520,18 @@ class CSLAVOCRApp:
             
             if self.file_type == 'image':
                 logger.info("Обработка изображения...")
+                
+                # Если изображение было повёрнуто/масштабировано - используем обработанный файл
+                # Иначе применяем предобработку к оригиналу
+                if self.rotation_angle.get() != 0.0 or self.image_scale.get() != 1.0:
+                    # Используем уже обработанное изображение (selected_file указывает на временный файл)
+                    process_file = self.selected_file
+                    logger.info(f"Используется обработанное изображение: поворот={self.rotation_angle.get()}°, масштаб={self.image_scale.get()}x")
+                else:
+                    process_file = self.selected_file
+                
                 text = process_image_to_text(
-                    self.selected_file,
+                    process_file,
                     self.default_predictions_path if self.predictions_list else None,
                     self.default_model_path if self.model else None,
                     min_h_symbols=self.min_h_symbols.get(),
@@ -789,10 +842,297 @@ class CSLAVOCRApp:
 • Поддержка киновари и диакритических знаков
 • 49 классов символов
 • Экспорт в UTF-8
+• Визуализация bounding boxes
+• Сравнение с эталонным текстом
+• Генерация обучающих данных
 
 Разработано для проекта CSLAV_OCR"""
         
         messagebox.showinfo("О программе", about_text)
+    
+    def _toggle_visualization(self):
+        """Переключение визуализации bounding boxes и символов."""
+        self._refresh_visualization()
+    
+    def _refresh_visualization(self):
+        """Обновление визуализации на изображении."""
+        if not self.selected_file or not self.file_type == 'image':
+            return
+        
+        try:
+            # Чтение изображения
+            img_array = np.fromfile(self.selected_file, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                return
+            
+            # Если включена визуализация - получаем bounding boxes
+            if self.show_boxes_var.get() or self.show_chars_var.get():
+                # Подготовка изображения для детекции
+                prepared = prepare_img(self.selected_file, False)
+                
+                # Получение bounding boxes
+                boxes = get_boxes_from_prepared(
+                    prepared, 
+                    min_h=self.min_h_symbols.get(),
+                    min_h_box=self.min_h_boxes.get()
+                )
+                
+                # Получение распознанных символов если нужно
+                symbols = []
+                if self.show_chars_var.get() and self.model is not None and self.predictions_list is not None:
+                    symbols = get_symbols_from_prepared(
+                        prepared,
+                        boxes,
+                        self.model,
+                        self.predictions_list
+                    )
+                
+                # Отрисовка на изображении
+                for i, box in enumerate(boxes):
+                    x, y, w, h = box
+                    
+                    # Рисуем рамку
+                    if self.show_boxes_var.get():
+                        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 1)
+                    
+                    # Рисуем символ если есть
+                    if self.show_chars_var.get() and i < len(symbols):
+                        symbol = symbols[i]
+                        cv2.putText(img, str(symbol), (x, y - 2), 
+                                   cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
+                
+                logger.info(f"Визуализация: {len(boxes)} рамок, {len(symbols)} символов")
+            
+            # Конвертация и отображение
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img_pil = Image.fromarray(img_rgb)
+            
+            # Масштабирование под размер canvas
+            canvas_width = self.image_canvas.winfo_width()
+            canvas_height = self.image_canvas.winfo_height()
+            
+            if canvas_width < 2:
+                canvas_width = 500
+            if canvas_height < 2:
+                canvas_height = 600
+            
+            orig_width, orig_height = img_pil.size
+            scale = min(canvas_width / orig_width, canvas_height / orig_height, 1.0)
+            if scale < 1.0:
+                new_width = int(orig_width * scale)
+                new_height = int(orig_height * scale)
+                img_pil = img_pil.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            self.photo_image = ImageTk.PhotoImage(img_pil)
+            
+            # Очистка и обновление отображения
+            for widget in self.image_scrollable_frame.winfo_children():
+                widget.destroy()
+            
+            image_label = ttk.Label(self.image_scrollable_frame, image=self.photo_image)
+            image_label.pack(padx=5, pady=5)
+            
+        except Exception as e:
+            logger.error(f"Ошибка при визуализации: {e}")
+    
+    def _load_etalon(self):
+        """Загрузка эталонного текста из файла."""
+        filename = filedialog.askopenfilename(
+            title="Выберите файл с эталонным текстом",
+            filetypes=[
+                ("Текстовые файлы", "*.txt"),
+                ("Все файлы", "*.*")
+            ]
+        )
+        if filename:
+            try:
+                with open(filename, 'r', encoding='utf-8') as f:
+                    etalon_text = f.read()
+                
+                self.etalon_text.delete(1.0, tk.END)
+                self.etalon_text.insert(tk.END, etalon_text)
+                self.compare_result_label.config(text="")
+                self.status_var.set(f"Эталон загружен: {os.path.basename(filename)}")
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Не удалось загрузить эталон:\n{e}")
+    
+    def _compare_with_etalon(self):
+        """Сравнение распознанного текста с эталоном."""
+        ocr_text = self.result_text.get(1.0, tk.END).strip()
+        etalon_text = self.etalon_text.get(1.0, tk.END).strip()
+        
+        if not ocr_text:
+            messagebox.showwarning("Предупреждение", "Нет распознанного текста для сравнения!")
+            return
+        
+        if not etalon_text:
+            messagebox.showwarning("Предупреждение", "Нет эталонного текста для сравнения!")
+            return
+        
+        # Простое посимвольное сравнение
+        ocr_chars = list(ocr_text)
+        etalon_chars = list(etalon_text)
+        
+        total_chars = max(len(ocr_chars), len(etalon_chars))
+        matching_chars = sum(1 for o, e in zip(ocr_chars, etalon_chars) if o == e)
+        
+        accuracy = (matching_chars / total_chars * 100) if total_chars > 0 else 0
+        
+        # Подробный анализ
+        diff_positions = []
+        for i, (o, e) in enumerate(zip(ocr_chars, etalon_chars)):
+            if o != e:
+                diff_positions.append((i, o, e))
+        
+        result_msg = f"Точность: {accuracy:.1f}%\n"
+        result_msg += f"Совпадений: {matching_chars}/{total_chars}\n"
+        if diff_positions:
+            result_msg += f"Различий: {len(diff_positions)}"
+            if len(diff_positions) <= 10:
+                diffs_str = ", ".join([f"'{o}'→'{e}'@{i}" for i, o, e in diff_positions[:5]])
+                result_msg += f"\nПримеры: {diffs_str}"
+        else:
+            result_msg += "Полное совпадение!"
+        
+        self.compare_result_label.config(text=f"✓ {accuracy:.1f}%")
+        self.status_var.set(f"Сравнение завершено: {accuracy:.1f}%")
+        
+        # Вывод подробностей в лог
+        logger.info(f"Сравнение с эталоном: точность {accuracy:.1f}%, различий: {len(diff_positions)}")
+    
+    def _export_symbol_data(self):
+        """Экспорт данных для обучения - выбранный символ."""
+        if not self.selected_file or not self.file_type == 'image':
+            messagebox.showwarning("Предупреждение", "Выберите изображение для экспорта!")
+            return
+        
+        symbol_class = self.symbol_class_var.get().strip()
+        if not symbol_class or symbol_class == "?":
+            messagebox.showwarning("Предупреждение", "Укажите класс символа!")
+            return
+        
+        try:
+            # Подготовка изображения
+            prepared = prepare_img(self.selected_file, False)
+            
+            # Получение bounding boxes
+            boxes = get_boxes_from_prepared(
+                prepared,
+                min_h=self.min_h_symbols.get(),
+                min_h_box=self.min_h_boxes.get()
+            )
+            
+            if not boxes:
+                messagebox.showwarning("Предупреждение", "Символы не найдены!")
+                return
+            
+            # Создание папки для экспорта
+            export_dir = os.path.join(os.path.dirname(__file__), 'training_export')
+            os.makedirs(export_dir, exist_ok=True)
+            
+            # Папка для конкретного класса
+            class_dir = os.path.join(export_dir, f"class_{symbol_class}")
+            os.makedirs(class_dir, exist_ok=True)
+            
+            # Чтение оригинального изображения
+            img_array = np.fromfile(self.selected_file, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            exported_count = 0
+            for i, box in enumerate(boxes):
+                x, y, w, h = box
+                
+                # Извлечение ROI
+                roi = img[y:y+h, x:x+w]
+                
+                # Сохранение
+                filename = os.path.join(class_dir, f"symbol_{i:04d}_{symbol_class}.png")
+                cv2.imwrite(filename, roi)
+                exported_count += 1
+            
+            self.training_status_label.config(text=f"✓ {exported_count} симв.")
+            logger.info(f"Экспортировано {exported_count} символов класса '{symbol_class}' в {class_dir}")
+            messagebox.showinfo("Успех", f"Экспортировано {exported_count} символов в:\n{class_dir}")
+            
+        except Exception as e:
+            logger.error(f"Ошибка при экспорте символа: {e}", exc_info=True)
+            messagebox.showerror("Ошибка", f"Не удалось экспортировать данные:\n{e}")
+    
+    def _export_all_training_data(self):
+        """Экспорт всех данных для обучения с автоматической классификацией."""
+        if not self.selected_file or not self.file_type == 'image':
+            messagebox.showwarning("Предупреждение", "Выберите изображение для экспорта!")
+            return
+        
+        if self.model is None or self.predictions_list is None:
+            messagebox.showwarning("Предупреждение", "Модель или предсказания не загружены!")
+            return
+        
+        try:
+            # Подготовка изображения
+            prepared = prepare_img(self.selected_file, False)
+            
+            # Получение bounding boxes
+            boxes = get_boxes_from_prepared(
+                prepared,
+                min_h=self.min_h_symbols.get(),
+                min_h_box=self.min_h_boxes.get()
+            )
+            
+            if not boxes:
+                messagebox.showwarning("Предупреждение", "Символы не найдены!")
+                return
+            
+            # Получение распознанных символов
+            symbols = get_symbols_from_prepared(
+                prepared,
+                boxes,
+                self.model,
+                self.predictions_list
+            )
+            
+            # Создание папки для экспорта
+            export_dir = os.path.join(os.path.dirname(__file__), 'training_export')
+            os.makedirs(export_dir, exist_ok=True)
+            
+            # Чтение оригинального изображения
+            img_array = np.fromfile(self.selected_file, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            # Группировка по классам
+            class_counts = {}
+            for i, (box, symbol) in enumerate(zip(boxes, symbols)):
+                x, y, w, h = box
+                symbol_str = str(symbol)
+                
+                # Папка для класса
+                class_dir = os.path.join(export_dir, f"class_{symbol_str}")
+                os.makedirs(class_dir, exist_ok=True)
+                
+                # Извлечение ROI
+                roi = img[y:y+h, x:x+w]
+                
+                # Сохранение
+                filename = os.path.join(class_dir, f"symbol_{i:04d}_{symbol_str}.png")
+                cv2.imwrite(filename, roi)
+                
+                class_counts[symbol_str] = class_counts.get(symbol_str, 0) + 1
+            
+            # Формирование отчета
+            report = f"Экспортировано символов:\n"
+            for cls, count in sorted(class_counts.items()):
+                report += f"  '{cls}': {count}\n"
+            report += f"Всего: {sum(class_counts.values())}"
+            
+            self.training_status_label.config(text=f"✓ {sum(class_counts.values())} симв.")
+            logger.info(f"Экспортировано {sum(class_counts.values())} символов в {export_dir}")
+            messagebox.showinfo("Успех", report)
+            
+        except Exception as e:
+            logger.error(f"Ошибка при экспорте всех данных: {e}", exc_info=True)
+            messagebox.showerror("Ошибка", f"Не удалось экспортировать данные:\n{e}")
 
 
 def main():
