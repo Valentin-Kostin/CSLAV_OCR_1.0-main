@@ -660,13 +660,15 @@ class CSLAVOCRApp:
             
             # Сохранение повёрнутого изображения во временный файл
             temp_filename = os.path.join(self.rotated_temp_dir, "rotated_image.png")
-            success = cv2.imencode('.png', rotated)
-            if success is None:
+            
+            # Используем imencode и сохраняем через numpy для поддержки кириллических путей
+            ret, buffer = cv2.imencode('.png', rotated)
+            if not ret:
                 raise ValueError("Не удалось закодировать повёрнутое изображение")
             
             # Запись через numpy для поддержки кириллических путей
             with open(temp_filename, 'wb') as f:
-                f.write(success.tobytes())
+                f.write(buffer.tobytes())
             
             # Сохранение пути к оригиналу для возможности сброса
             if not self.original_file_path:
