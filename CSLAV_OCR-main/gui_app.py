@@ -9,8 +9,10 @@ import sys
 import threading
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, scrolledtext
+from PIL import Image, ImageTk
 from tensorflow.keras import models
 import cv2
+import numpy as np
 import pymupdf  # PyMuPDF (используем новый API)
 
 # Импорт утилит и логгера
@@ -28,8 +30,8 @@ class CSLAVOCRApp:
     def __init__(self, root):
         self.root = root
         self.root.title("CSLAV OCR - Распознавание церковнославянских текстов")
-        self.root.geometry("900x700")
-        self.root.minsize(800, 600)
+        self.root.geometry("1200x800")
+        self.root.minsize(1000, 700)
         
         # Переменные
         self.model = None
@@ -37,6 +39,8 @@ class CSLAVOCRApp:
         self.selected_file = None
         self.file_type = None  # 'image' или 'pdf'
         self.is_processing = False
+        self.current_image = None  # Для отображения изображения
+        self.photo_image = None  # Ссылка на PhotoImage
         
         # Пути по умолчанию
         self.default_model_path = os.path.join(os.path.dirname(__file__), 'machine.h5')
@@ -55,8 +59,9 @@ class CSLAVOCRApp:
         
         # Создание интерфейса
         self._create_menu()
-        self._create_main_frame()
-        self._create_status_bar()
+        self._create_top_panel()
+        self._create_main_area()
+        self._create_bottom_panel()
         
         # Загрузка модели при запуске
         self._load_model_async()
@@ -88,100 +93,125 @@ class CSLAVOCRApp:
         menubar.add_cascade(label="Справка", menu=help_menu)
         help_menu.add_command(label="О программе", command=self._show_about)
     
-    def _create_main_frame(self):
-        """Создание основной панели интерфейса."""
-        main_frame = ttk.Frame(self.root, padding="10")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    def _create_top_panel(self):
+        """Создание верхней панели с кнопками и настройками."""
+        top_frame = ttk.Frame(self.root, padding="5")
+        top_frame.pack(side=tk.TOP, fill=tk.X)
         
-        # Настройка растягивания
-        self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
-        main_frame.columnconfigure(0, weight=1)
-        main_frame.rowconfigure(3, weight=1)
+        # Левая часть - кнопки выбора файла
+        file_frame = ttk.LabelFrame(top_frame, text="Файл", padding="5")
+        file_frame.pack(side=tk.LEFT, fill=tk.X, padx=5)
         
-        # Панель выбора файла
-        file_frame = ttk.LabelFrame(main_frame, text="Выбор файла", padding="5")
-        file_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
-        file_frame.columnconfigure(1, weight=1)
+        ttk.Button(file_frame, text="📁 Изображение", command=self._select_image).pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_frame, text="📄 PDF", command=self._select_pdf).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(file_frame, text="Файл:").grid(row=0, column=0, sticky=tk.W, padx=5)
         self.file_label = ttk.Label(file_frame, text="Не выбран", foreground="gray")
-        self.file_label.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=5)
+        self.file_label.pack(side=tk.LEFT, padx=10)
         
-        btn_frame = ttk.Frame(file_frame)
-        btn_frame.grid(row=0, column=2, padx=5)
+        # Центральная часть - параметры распознавания
+        params_frame = ttk.LabelFrame(top_frame, text="Параметры распознавания", padding="5")
+        params_frame.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
         
-        ttk.Button(btn_frame, text="Изображение", command=self._select_image).pack(side=tk.LEFT, padx=2)
-        ttk.Button(btn_frame, text="PDF", command=self._select_pdf).pack(side=tk.LEFT, padx=2)
+        # Параметры в одну строку
+        params_inner = ttk.Frame(params_frame)
+        params_inner.pack(fill=tk.X)
         
-        # Панель настроек
-        settings_frame = ttk.LabelFrame(main_frame, text="Параметры распознавания", padding="5")
-        settings_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
-        settings_frame.columnconfigure(1, weight=1)
+        ttk.Label(params_inner, text="Мин. высота символа:").pack(side=tk.LEFT, padx=2)
+        ttk.Spinbox(params_inner, from_=5, to=100, textvariable=self.min_h_symbols, width=5).pack(side=tk.LEFT, padx=2)
         
-        # Параметры в две колонки
-        ttk.Label(settings_frame, text="Мин. высота символа:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=2)
-        ttk.Spinbox(settings_frame, from_=5, to=100, textvariable=self.min_h_symbols, width=10).grid(row=0, column=1, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(params_inner, text="Мин. высота строки:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner, from_=20, to=200, textvariable=self.min_h_boxes, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(settings_frame, text="Мин. высота строки:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=2)
-        ttk.Spinbox(settings_frame, from_=20, to=200, textvariable=self.min_h_boxes, width=10).grid(row=1, column=1, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(params_inner, text="Порог строк:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner, from_=20, to=150, textvariable=self.edge_threshn, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(settings_frame, text="Порог строк:").grid(row=2, column=0, sticky=tk.W, padx=5, pady=2)
-        ttk.Spinbox(settings_frame, from_=20, to=150, textvariable=self.edge_threshn, width=10).grid(row=2, column=1, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(params_inner, text="Размер пробела:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner, from_=10, to=150, textvariable=self.space_size, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(settings_frame, text="Размер пробела:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=2)
-        ttk.Spinbox(settings_frame, from_=10, to=150, textvariable=self.space_size, width=10).grid(row=3, column=1, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(params_inner, text="Масштаб PDF:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner, from_=2.0, to=10.0, increment=0.5, textvariable=self.zoom_pdf, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(settings_frame, text="Масштаб PDF:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=2)
-        ttk.Spinbox(settings_frame, from_=2.0, to=10.0, increment=0.5, textvariable=self.zoom_pdf, width=10).grid(row=4, column=1, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(params_inner, text="Страница:").pack(side=tk.LEFT, padx=(10, 2))
+        ttk.Spinbox(params_inner, from_=1, to=9999, textvariable=self.pdf_page, width=5).pack(side=tk.LEFT, padx=2)
         
-        ttk.Label(settings_frame, text="Страница PDF:").grid(row=5, column=0, sticky=tk.W, padx=5, pady=2)
-        ttk.Spinbox(settings_frame, from_=1, to=9999, textvariable=self.pdf_page, width=10).grid(row=5, column=1, sticky=tk.W, padx=5, pady=2)
+        self.save_interim_check = ttk.Checkbutton(params_inner, text="Сохранять промежуточные", variable=self.save_interim)
+        self.save_interim_check.pack(side=tk.LEFT, padx=10)
         
-        self.save_interim_check = ttk.Checkbutton(settings_frame, text="Сохранять промежуточные результаты", variable=self.save_interim)
-        self.save_interim_check.grid(row=6, column=0, columnspan=2, sticky=tk.W, padx=5, pady=5)
+        # Правая часть - кнопки управления
+        control_frame = ttk.Frame(top_frame)
+        control_frame.pack(side=tk.RIGHT, padx=5)
         
-        # Кнопка запуска
-        button_frame = ttk.Frame(main_frame)
-        button_frame.grid(row=2, column=0, pady=(0, 10))
+        self.process_button = ttk.Button(control_frame, text="▶ Распознать", command=self._start_processing)
+        self.process_button.pack(side=tk.LEFT, padx=2)
         
-        self.process_button = ttk.Button(button_frame, text="Распознать текст", command=self._start_processing)
-        self.process_button.pack(side=tk.LEFT, padx=5)
+        self.cancel_button = ttk.Button(control_frame, text="⏹ Отмена", command=self._cancel_processing, state=tk.DISABLED)
+        self.cancel_button.pack(side=tk.LEFT, padx=2)
         
-        self.cancel_button = ttk.Button(button_frame, text="Отмена", command=self._cancel_processing, state=tk.DISABLED)
-        self.cancel_button.pack(side=tk.LEFT, padx=5)
+        ttk.Button(control_frame, text="🗑 Очистить", command=self._clear_all).pack(side=tk.LEFT, padx=2)
+    
+    def _create_main_area(self):
+        """Создание основной области с изображением слева и текстом справа."""
+        main_area = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
+        main_area.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        # Прогресс-бар
-        self.progress_var = tk.DoubleVar()
-        self.progress_bar = ttk.Progressbar(main_frame, variable=self.progress_var, maximum=100, mode='indeterminate')
-        self.progress_bar.grid(row=2, column=0, sticky=(tk.W, tk.E), padx=5, pady=5)
+        # Левая панель - изображение
+        left_frame = ttk.LabelFrame(main_area, text="Изображение", padding="5")
+        main_area.add(left_frame, weight=1)
         
-        # Поле результата
-        result_frame = ttk.LabelFrame(main_frame, text="Результат распознавания", padding="5")
-        result_frame.grid(row=3, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
-        result_frame.columnconfigure(0, weight=1)
-        result_frame.rowconfigure(0, weight=1)
+        # Canvas для прокрутки изображения
+        self.image_canvas = tk.Canvas(left_frame, bg='white', highlightthickness=0)
+        self.image_scrollbar_y = ttk.Scrollbar(left_frame, orient=tk.VERTICAL, command=self.image_canvas.yview)
+        self.image_scrollbar_x = ttk.Scrollbar(left_frame, orient=tk.HORIZONTAL, command=self.image_canvas.xview)
+        self.image_scrollable_frame = ttk.Frame(self.image_canvas)
         
-        self.result_text = scrolledtext.ScrolledText(result_frame, wrap=tk.WORD, height=20, font=("Consolas", 11))
-        self.result_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        self.image_scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.image_canvas.configure(scrollregion=self.image_canvas.bbox("all"))
+        )
+        
+        self.image_canvas.create_window((0, 0), window=self.image_scrollable_frame, anchor="nw")
+        self.image_canvas.configure(yscrollcommand=self.image_scrollbar_y.set, xscrollcommand=self.image_scrollbar_x.set)
+        
+        self.image_label = ttk.Label(self.image_scrollable_frame, text="Нет изображения", foreground="gray")
+        self.image_label.pack(padx=5, pady=5)
+        
+        self.image_scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+        self.image_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
+        self.image_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        # Правая панель - распознанный текст
+        right_frame = ttk.LabelFrame(main_area, text="Распознанный текст", padding="5")
+        main_area.add(right_frame, weight=1)
+        
+        self.result_text = scrolledtext.ScrolledText(right_frame, wrap=tk.WORD, font=("Consolas", 11))
+        self.result_text.pack(fill=tk.BOTH, expand=True)
         
         # Кнопки действий с результатом
-        result_btn_frame = ttk.Frame(result_frame)
-        result_btn_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(5, 0))
+        result_btn_frame = ttk.Frame(right_frame)
+        result_btn_frame.pack(fill=tk.X, pady=(5, 0))
         
         ttk.Button(result_btn_frame, text="Копировать", command=self._copy_result).pack(side=tk.LEFT, padx=2)
         ttk.Button(result_btn_frame, text="Очистить", command=self._clear_result).pack(side=tk.LEFT, padx=2)
         ttk.Button(result_btn_frame, text="Сохранить в файл...", command=self._save_result).pack(side=tk.LEFT, padx=2)
     
-    def _create_status_bar(self):
-        """Создание строки состояния."""
+    def _create_bottom_panel(self):
+        """Создание нижней панели с прогресс-баром и сообщениями."""
+        bottom_frame = ttk.Frame(self.root, padding="5")
+        bottom_frame.pack(side=tk.BOTTOM, fill=tk.X)
+        
+        # Прогресс-бар
+        self.progress_var = tk.DoubleVar()
+        self.progress_bar = ttk.Progressbar(bottom_frame, variable=self.progress_var, maximum=100, mode='indeterminate')
+        self.progress_bar.pack(fill=tk.X, pady=(0, 5))
+        
+        # Строка состояния с сообщениями
         self.status_var = tk.StringVar(value="Готов к работе")
-        status_bar = ttk.Label(self.root, textvariable=self.status_var, relief=tk.SUNKEN, anchor=tk.W)
-        status_bar.grid(row=1, column=0, sticky=(tk.W, tk.E), padx=5, pady=2)
+        status_bar = ttk.Label(bottom_frame, textvariable=self.status_var, relief=tk.SUNKEN, anchor=tk.W)
+        status_bar.pack(fill=tk.X, side=tk.LEFT, expand=True)
         
         self.model_status_var = tk.StringVar(value="Модель: не загружена")
-        model_status_bar = ttk.Label(self.root, textvariable=self.model_status_var, relief=tk.SUNKEN, anchor=tk.W)
-        model_status_bar.grid(row=2, column=0, sticky=(tk.W, tk.E), padx=5, pady=2)
+        model_status_bar = ttk.Label(bottom_frame, textvariable=self.model_status_var, relief=tk.SUNKEN, anchor=tk.W)
+        model_status_bar.pack(fill=tk.X, side=tk.RIGHT, padx=(5, 0))
     
     def _load_model_async(self):
         """Асинхронная загрузка модели."""
@@ -231,6 +261,57 @@ class CSLAVOCRApp:
             self.file_type = 'image'
             self.file_label.config(text=os.path.basename(filename), foreground="black")
             self.status_var.set(f"Выбран файл: {os.path.basename(filename)}")
+            self._display_image(filename)
+    
+    def _display_image(self, filepath):
+        """Отображение изображения в левой панели."""
+        try:
+            # Чтение изображения с поддержкой кириллических путей
+            img_array = np.fromfile(filepath, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                raise ValueError("Не удалось декодировать изображение")
+            
+            # Конвертация BGR -> RGB для PIL
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            
+            # Получение размеров области отображения
+            canvas_width = self.image_canvas.winfo_width()
+            canvas_height = self.image_canvas.winfo_height()
+            
+            # Если canvas ещё не инициализирован, используем значения по умолчанию
+            if canvas_width < 2:
+                canvas_width = 500
+            if canvas_height < 2:
+                canvas_height = 600
+            
+            # Масштабирование изображения если оно слишком большое
+            img_pil = Image.fromarray(img_rgb)
+            orig_width, orig_height = img_pil.size
+            
+            scale = min(canvas_width / orig_width, canvas_height / orig_height, 1.0)
+            if scale < 1.0:
+                new_width = int(orig_width * scale)
+                new_height = int(orig_height * scale)
+                img_pil = img_pil.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            # Конвертация в PhotoImage
+            self.photo_image = ImageTk.PhotoImage(img_pil)
+            
+            # Очистка предыдущего содержимого
+            for widget in self.image_scrollable_frame.winfo_children():
+                widget.destroy()
+            
+            # Отображение изображения
+            image_label = ttk.Label(self.image_scrollable_frame, image=self.photo_image)
+            image_label.pack(padx=5, pady=5)
+            
+            logger.debug(f"Изображение отображено: {orig_width}x{orig_height} -> {img_pil.size}")
+            
+        except Exception as e:
+            logger.error(f"Ошибка при отображении изображения: {e}")
+            messagebox.showwarning("Предупреждение", f"Не удалось отобразить изображение:\n{e}")
     
     def _select_pdf(self):
         """Выбор PDF файла для распознавания."""
@@ -437,6 +518,20 @@ class CSLAVOCRApp:
         """Очистка поля результата."""
         self.result_text.delete(1.0, tk.END)
         self.status_var.set("Результат очищен")
+    
+    def _clear_all(self):
+        """Очистка всего: изображения и результата."""
+        self._clear_result()
+        # Очистка изображения
+        for widget in self.image_scrollable_frame.winfo_children():
+            widget.destroy()
+        self.image_label = ttk.Label(self.image_scrollable_frame, text="Нет изображения", foreground="gray")
+        self.image_label.pack(padx=5, pady=5)
+        self.photo_image = None
+        self.selected_file = None
+        self.file_type = None
+        self.file_label.config(text="Не выбран", foreground="gray")
+        self.status_var.set("Все очищено")
     
     def _save_result(self):
         """Сохранение результата в файл."""
