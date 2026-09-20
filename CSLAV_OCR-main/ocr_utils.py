@@ -6,6 +6,7 @@ import collections
 import numpy
 import cv2
 from tensorflow.keras import models, preprocessing
+from logger_config import logger
 
 
 class Symbol:
@@ -27,26 +28,50 @@ class Symbol:
             model: загруженная модель нейросети
             predictions_list: список предсказаний из decode_predictions
         """
-        cv2.imwrite('symbol.png', matrix)
-        image = preprocessing.image.load_img('symbol.png', target_size=(56, 56, 3))
-        input_arr = preprocessing.image.img_to_array(image)
-        num_arr = numpy.array([input_arr])
-        result = model.predict([num_arr], verbose=0)
-        
-        for prediction in predictions_list:
-            if len(prediction) == 2 and prediction[1] == str(result):
-                self.text = prediction[0]
-                break
-        else:
+        logger.debug(f"Создание Symbol для прямоугольника: {rectangle}")
+        try:
+            # Сохраняем временный файл для обработки
+            temp_file = 'symbol_temp.png'
+            cv2.imwrite(temp_file, matrix)
+            
+            if not os.path.exists(temp_file):
+                logger.error(f"Не удалось создать временный файл {temp_file}")
+                self.text = ''
+                self.coordinates = tuple(rectangle)
+                return
+                
+            image = preprocessing.image.load_img(temp_file, target_size=(56, 56, 3))
+            input_arr = preprocessing.image.img_to_array(image)
+            num_arr = numpy.array([input_arr])
+            
+            logger.debug("Выполнение предсказания модели...")
+            result = model.predict([num_arr], verbose=0)
+            
+            for prediction in predictions_list:
+                if len(prediction) == 2 and prediction[1] == str(result):
+                    self.text = prediction[0]
+                    logger.debug(f"Символ распознан: '{self.text}' (код: {result})")
+                    break
+            else:
+                logger.warning(f"Не найдено соответствие для предсказания: {result}")
+                self.text = ''
+            
+            # Удаляем временный файл
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
+                
+            self.coordinates = (
+                rectangle[0], 
+                rectangle[1], 
+                rectangle[0] + rectangle[2], 
+                rectangle[1] + rectangle[3]
+            )
+            logger.debug(f"Координаты символа: {self.coordinates}")
+            
+        except Exception as e:
+            logger.error(f"Ошибка при создании Symbol: {e}", exc_info=True)
             self.text = ''
-        
-        os.remove('symbol.png')
-        self.coordinates = (
-            rectangle[0], 
-            rectangle[1], 
-            rectangle[0] + rectangle[2], 
-            rectangle[1] + rectangle[3]
-        )
+            self.coordinates = tuple(rectangle)
 
 
 def decode_predictions(prediction_file):
@@ -59,12 +84,21 @@ def decode_predictions(prediction_file):
     Returns:
         predictions_list: список списков [символ, предсказание]
     """
-    with open(prediction_file, 'r', encoding='utf-8') as f_predictions:
-        predictions = f_predictions.read()
-    predictions_list = predictions.split('\n\n')
-    for i in range(len(predictions_list)):
-        predictions_list[i] = predictions_list[i].split('\t')
-    return predictions_list
+    logger.debug(f"Чтение файла предсказаний: {prediction_file}")
+    try:
+        with open(prediction_file, 'r', encoding='utf-8') as f_predictions:
+            predictions = f_predictions.read()
+        logger.debug(f"Прочитано {len(predictions)} байт из файла предсказаний")
+        
+        predictions_list = predictions.split('\n\n')
+        for i in range(len(predictions_list)):
+            predictions_list[i] = predictions_list[i].split('\t')
+        
+        logger.info(f"Загружено {len(predictions_list)} предсказаний")
+        return predictions_list
+    except Exception as e:
+        logger.error(f"Ошибка при чтении файла предсказаний {prediction_file}: {e}", exc_info=True)
+        raise
 
 
 def kinovar2black(img):
@@ -105,13 +139,27 @@ def prepare_img(filename, save_interim_results=False):
     Returns:
         img_erode: подготовленное бинарное изображение
     """
+    logger.info(f"Начало предобработки изображения: {filename}")
+    
+    # Проверка существования файла
+    if not os.path.exists(filename):
+        logger.error(f"Файл не найден: {filename}")
+        raise FileNotFoundError(f"Файл не найден: {filename}")
+    
     # Исправление для путей с кириллицей в OpenCV на Windows
     # Читаем файл как байты и декодируем вручную
-    img_array = numpy.fromfile(filename, dtype=numpy.uint8)
-    img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-    
-    if img is None:
-        raise ValueError(f"Не удалось прочитать изображение. Проверьте целостность файла: {filename}")
+    try:
+        img_array = numpy.fromfile(filename, dtype=numpy.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        if img is None:
+            logger.error(f"Не удалось декодировать изображение. Проверьте целостность файла: {filename}")
+            raise ValueError(f"Не удалось прочитать изображение. Проверьте целостность файла: {filename}")
+        
+        logger.debug(f"Изображение загружено успешно. Размер: {img.shape}")
+    except Exception as e:
+        logger.error(f"Ошибка при загрузке изображения {filename}: {e}", exc_info=True)
+        raise
     
     se = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     img_ex = cv2.morphologyEx(img, cv2.MORPH_DILATE, se)
@@ -119,7 +167,7 @@ def prepare_img(filename, save_interim_results=False):
     
     if save_interim_results:
         cv2.imwrite('img_no_kinovar.png', img_no_kinovar)
-        print('Изображение после перекрашивания киновари в файле img_no_kinovar.png')
+        logger.info('Изображение после перекрашивания киновари сохранено в img_no_kinovar.png')
     
     img_gray = cv2.cvtColor(img_no_kinovar, cv2.COLOR_BGR2GRAY)
     img_binary = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
@@ -127,8 +175,9 @@ def prepare_img(filename, save_interim_results=False):
     
     if save_interim_results:
         cv2.imwrite('img_binary.png', img_erode)
-        print('Изображение после предобработки в файле img_binary.png')
+        logger.info('Изображение после предобработки сохранено в img_binary.png')
     
+    logger.debug("Предобработка изображения завершена")
     return img_erode
 
 
@@ -441,16 +490,34 @@ def process_image_to_text(filename, prediction_file, model_name, min_h_symbols=1
     Returns:
         text: распознанный текст
     """
-    symbols = get_symbols_from_file(filename, prediction_file, model_name, min_h=min_h_symbols)
-    boxes = get_boxes_from_image(filename, min_h=min_h_boxes)
-    edges = get_edges(boxes, edge_threshn, filename)
-    rows = symbols_to_rows(symbols, edges, filename, save_interim_results)
+    logger.info(f"Запуск полного процесса распознавания для файла: {filename}")
+    logger.debug(f"Параметры: min_h_symbols={min_h_symbols}, min_h_boxes={min_h_boxes}, "
+                f"edge_threshn={edge_threshn}, space_size={space_size}")
     
-    text = ''
-    for row in rows:
-        text += get_raw_str(row, space_size) + '\n'
-    
-    return text
+    try:
+        symbols = get_symbols_from_file(filename, prediction_file, model_name, min_h=min_h_symbols)
+        logger.info(f"Найдено {len(symbols)} символов")
+        
+        boxes = get_boxes_from_image(filename, min_h=min_h_boxes)
+        logger.debug(f"Найдено {len(boxes)} контуров для определения строк")
+        
+        edges = get_edges(boxes, edge_threshn, filename)
+        logger.debug(f"Определено {len(edges)} строк")
+        
+        rows = symbols_to_rows(symbols, edges, filename, save_interim_results)
+        total_symbols = sum(len(row) for row in rows)
+        logger.info(f"Распределено {total_symbols} символов по {len(rows)} строкам")
+        
+        text = ''
+        for row in rows:
+            text += get_raw_str(row, space_size) + '\n'
+        
+        logger.info(f"Распознавание завершено. Длина текста: {len(text)} символов")
+        return text
+        
+    except Exception as e:
+        logger.error(f"Ошибка в process_image_to_text: {e}", exc_info=True)
+        raise
 
 
 def process_prepared_image_to_text(filename, img_prepared, model, predictions_list, 

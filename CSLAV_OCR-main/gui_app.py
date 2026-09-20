@@ -13,12 +13,13 @@ from tensorflow.keras import models
 import cv2
 import pymupdf  # PyMuPDF (используем новый API)
 
-# Импорт утилит из ocr_utils
+# Импорт утилит и логгера
 from ocr_utils import (
     decode_predictions, prepare_img, get_boxes_from_prepared,
     get_symbols_from_prepared, get_edges, symbols_to_rows, get_raw_str,
     process_prepared_image_to_text, process_image_to_text
 )
+from logger_config import logger
 
 
 class CSLAVOCRApp:
@@ -48,6 +49,8 @@ class CSLAVOCRApp:
         self.space_size = tk.IntVar(value=50)
         self.save_interim = tk.BooleanVar(value=False)
         self.zoom_pdf = tk.DoubleVar(value=4.166)
+        
+        logger.info("Инициализация GUI приложения CSLAV OCR")
         self.pdf_page = tk.IntVar(value=1)
         
         # Создание интерфейса
@@ -187,19 +190,29 @@ class CSLAVOCRApp:
                 self.status_var.set("Загрузка модели...")
                 self.root.update_idletasks()
                 
+                logger.info(f"Попытка загрузки модели из: {self.default_model_path}")
+                
                 if os.path.exists(self.default_model_path):
+                    logger.debug("Загрузка файла модели...")
                     self.model = models.load_model(self.default_model_path)
+                    logger.info("Модель успешно загружена")
                     self.model_status_var.set(f"Модель: machine.h5 (загружена)")
                     
                     if os.path.exists(self.default_predictions_path):
+                        logger.info(f"Загрузка предсказаний из: {self.default_predictions_path}")
                         self.predictions_list = decode_predictions(self.default_predictions_path)
                         self.status_var.set("Готов к работе")
+                        logger.info("Приложение готово к работе")
                     else:
+                        logger.error(f"Файл предсказаний не найден: {self.default_predictions_path}")
                         self.status_var.set("Файл predictions.txt не найден")
                 else:
+                    logger.error(f"Файл модели не найден: {self.default_model_path}")
                     self.status_var.set("Файл machine.h5 не найден. Выберите модель вручную.")
             except Exception as e:
-                self.status_var.set(f"Ошибка загрузки модели: {str(e)}")
+                error_msg = f"Ошибка загрузки модели: {str(e)}"
+                logger.error(error_msg, exc_info=True)
+                self.status_var.set(error_msg)
         
         thread = threading.Thread(target=load, daemon=True)
         thread.start()
@@ -309,7 +322,12 @@ class CSLAVOCRApp:
     def _process_file(self):
         """Обработка файла в отдельном потоке."""
         try:
+            logger.info(f"Начало обработки файла: {self.selected_file}")
+            logger.debug(f"Параметры: min_h_symbols={self.min_h_symbols.get()}, min_h_boxes={self.min_h_boxes.get()}, "
+                        f"edge_threshn={self.edge_threshn.get()}, space_size={self.space_size.get()}")
+            
             if self.file_type == 'image':
+                logger.info("Обработка изображения...")
                 text = process_image_to_text(
                     self.selected_file,
                     self.default_predictions_path if self.predictions_list else None,
@@ -325,6 +343,7 @@ class CSLAVOCRApp:
                 page_number = self.pdf_page.get()
                 zoom = self.zoom_pdf.get()
                 
+                logger.info(f"Извлечение страницы {page_number} из PDF (zoom={zoom})...")
                 self.status_var.set(f"Извлечение страницы {page_number} из PDF...")
                 self.root.update_idletasks()
                 
@@ -340,12 +359,14 @@ class CSLAVOCRApp:
                 temp_dir = os.path.join(os.path.dirname(self.selected_file), 'temp_ocr')
                 os.makedirs(temp_dir, exist_ok=True)
                 temp_image = os.path.join(temp_dir, 'page.png')
+                logger.debug(f"Сохранение временного изображения: {temp_image}")
                 pix.save(temp_image)
                 doc.close()
                 
                 self.status_var.set("Распознавание текста...")
                 self.root.update_idletasks()
                 
+                logger.info("Распознавание текста из страницы PDF...")
                 text = process_prepared_image_to_text(
                     temp_image,
                     prepare_img(temp_image, self.save_interim.get()),
@@ -363,14 +384,19 @@ class CSLAVOCRApp:
                     try:
                         os.remove(temp_image)
                         os.rmdir(temp_dir)
-                    except:
-                        pass
+                        logger.debug("Временные файлы удалены")
+                    except Exception as e:
+                        logger.warning(f"Не удалось удалить временные файлы: {e}")
+            
+            logger.info(f"Распознавание завершено успешно. Получено символов: {len(text)}")
             
             # Обновление результата в главном потоке
             self.root.after(0, self._update_result, text)
             
         except Exception as e:
-            self.root.after(0, self._processing_error, str(e))
+            error_msg = str(e)
+            logger.error(f"Ошибка при обработке файла: {error_msg}", exc_info=True)
+            self.root.after(0, self._processing_error, error_msg)
     
     def _update_result(self, text):
         """Обновление поля результата."""
