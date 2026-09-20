@@ -116,12 +116,12 @@ def kinovar2black(img):
     img = img.reshape(h * w, 3)
     img = img.T
     a = numpy.logical_and(img[2] / (img[0] + 1) > 1.4, img[2] / (img[1] + 1) > 1.4)
-    for idx in numpy.arange(len(a)):
-        x = a.item(idx)
-        if x:
-            img.itemset((0, idx), 30)
-            img.itemset((1, idx), 30)
-            img.itemset((2, idx), 30)
+    
+    # Замена киновари на черный цвет с помощью прямой индексации
+    img[0, a] = 30
+    img[1, a] = 30
+    img[2, a] = 30
+    
     img = img.T
     img = img.reshape(h, w, 3)
     return img
