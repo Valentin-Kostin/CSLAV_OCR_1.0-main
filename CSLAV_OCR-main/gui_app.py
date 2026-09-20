@@ -631,11 +631,14 @@ class CSLAVOCRApp:
         """Сброс поворота и масштаба к исходному изображению."""
         self.rotation_angle.set(0.0)
         self.image_scale.set(1.0)
-        if self.rotated_temp_dir:
-            self._cleanup_temp_dir()
-        # Восстановление оригинального файла если он был
+        # Восстановление оригинального файла если он был (ДО очистки временной папки!)
         if self.original_file_path:
             self.selected_file = self.original_file_path
+        # Очистка временной папки после восстановления пути
+        if self.rotated_temp_dir:
+            self._cleanup_temp_dir()
+        # Отображение изображения
+        if self.original_file_path and os.path.exists(self.original_file_path):
             self._display_image(self.selected_file)
             logger.info("Поворот и масштаб сброшены, восстановлено оригинальное изображение")
         else:
@@ -675,8 +678,13 @@ class CSLAVOCRApp:
             return
         
         try:
-            # Чтение оригинального изображения
+            # Чтение оригинального изображения (всегда из оригинала!)
             source_file = self.original_file_path if self.original_file_path else self.selected_file
+            
+            # Проверка существования оригинального файла
+            if not os.path.exists(source_file):
+                raise FileNotFoundError(f"Оригинальный файл не найден: {source_file}")
+            
             img_array = np.fromfile(source_file, dtype=np.uint8)
             img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
             
@@ -719,11 +727,15 @@ class CSLAVOCRApp:
             with open(temp_filename, 'wb') as f:
                 f.write(buffer.tobytes())
             
+            # Проверка что файл успешно сохранён
+            if not os.path.exists(temp_filename):
+                raise FileNotFoundError(f"Не удалось сохранить временный файл: {temp_filename}")
+            
             # Сохранение пути к оригиналу для возможности сброса
             if not self.original_file_path:
                 self.original_file_path = self.selected_file
             
-            # Обновление текущего файла
+            # Обновление текущего файла (только если файл существует!)
             self.selected_file = temp_filename
             logger.info(f"Изображение обработано: поворот {angle}°, масштаб {scale}x")
             
@@ -731,8 +743,12 @@ class CSLAVOCRApp:
             self._display_image(temp_filename)
             self.status_var.set(f"Поворот: {angle}°, Масштаб: {scale}x")
             
+        except FileNotFoundError as e:
+            logger.error(f"Файл не найден: {e}")
+            messagebox.showerror("Ошибка", f"Файл не найден:\n{e}\n\nПопробуйте выбрать изображение заново.")
+            self._reset_rotation()
         except Exception as e:
-            logger.error(f"Ошибка при обработке изображения: {e}")
+            logger.error(f"Ошибка при обработке изображения: {e}", exc_info=True)
             messagebox.showerror("Ошибка", f"Не удалось обработать изображение:\n{e}")
     
     def _save_result(self):
